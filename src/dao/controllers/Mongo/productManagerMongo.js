@@ -4,15 +4,53 @@ import { productsModel } from "../../models/products.model.js";
 // Define la clase ProductManager para manejar operaciones relacionadas con productos
 export default class ProductManager {
   // Método para obtener todos los productos
-  getProducts = async () => {
+  getProducts = async (queryParams) => {
     try {
-      // Retorna todos los productos de la base de datos
-      return await productsModel.find();
+        const { limit = 10, page = 1, sort, query } = queryParams;
+        const skip = (page - 1) * limit;
+
+        // Construye la consulta
+        let filter = {};
+        if (query) {
+            // Permite filtrar por categoría o disponibilidad
+            filter = { ...filter, $or: [{ category: query }, { availability: query }] };
+        }
+
+        // Configura el sort si se proporciona
+        let sortOption = {};
+        if (sort === 'asc') {
+            sortOption = { price: 1 };
+        } else if (sort === 'desc') {
+            sortOption = { price: -1 };
+        }
+
+        // Obtiene productos de la base de datos según los filtros, limit y sort especificados
+        const products = await productsModel.find(filter).sort(sortOption).skip(skip).limit(limit);
+        const totalProducts = await productsModel.countDocuments(filter);
+        const totalPages = Math.ceil(totalProducts / limit);
+
+        // Calcula las páginas previas y siguientes
+        const hasPrevPage = page > 1;
+        const hasNextPage = page < totalPages;
+        const prevPage = hasPrevPage ? page - 1 : null;
+        const nextPage = hasNextPage ? page + 1 : null;
+
+        // Retorna un objeto con los datos requeridos
+        return {
+            status: "success",
+            payload: products,
+            totalPages,
+            prevPage,
+            nextPage,
+            page,
+            hasPrevPage,
+            hasNextPage,
+            prevLink: hasPrevPage ? `/api/products?page=${prevPage}&limit=${limit}` : null,
+            nextLink: hasNextPage ? `/api/products?page=${nextPage}&limit=${limit}` : null,
+        };
     } catch (error) {
-      // Registra un error en la consola si ocurre durante la obtención de productos
-      console.log("Error al obtener productos", error);
-      // Lanza el error para ser manejado por el que llame a la función
-      throw error;
+        console.log("Error al obtener productos", error);
+        throw error;
     }
   };
 

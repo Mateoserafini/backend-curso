@@ -9,11 +9,11 @@ const routerP = Router(); // Crea una instancia del enrutador de Express para pr
 // Ruta para obtener la lista de productos, opcionalmente filtrada por consultas
 routerP.get("/", async (req, res) => {
   try {
-    const products = await prodM.getProducts(req.query); // Obtiene productos con consultas opcionales
-    res.json({ products }); // Responde con los productos en formato JSON
+      const productsData = await prodM.getProducts(req.query); // Pasa los query params a getProducts
+      res.json(productsData); // Responde con los datos obtenidos en formato JSON
   } catch (error) {
-    console.error(error); // Imprime el error en la consola
-    res.status(500).json({ error: "Error interno del servidor" }); // Responde con un error interno del servidor
+      console.error(error);
+      res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 
