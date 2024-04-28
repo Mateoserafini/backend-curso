@@ -47,5 +47,53 @@ router.post("/:cid/product/:pid", async (req, res) => {
   }
 });
 
+router.delete("/:cid/products/:pid", async (req, res) => {
+  const cartId = req.params.cid;
+  const productId = req.params.pid;
+  try {
+      const carritoActualizado = await cartM.deleteProductFromCart(cartId, productId);
+      res.json(carritoActualizado.products);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+router.put("/:cid", async (req, res) => {
+  const cartId = req.params.cid;
+  const productsArray = req.body.products; // Obtiene el arreglo de productos del cuerpo de la solicitud
+  try {
+      const carritoActualizado = await cartM.updateCart(cartId, productsArray);
+      res.json(carritoActualizado.products);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+router.put("/:cid/products/:pid", async (req, res) => {
+  const cartId = req.params.cid;
+  const productId = req.params.pid;
+  const newQuantity = req.body.quantity; // Obtiene la nueva cantidad del cuerpo de la solicitud
+  try {
+      const carritoActualizado = await cartM.updateProductQuantity(cartId, productId, newQuantity);
+      res.json(carritoActualizado.products);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+router.delete("/:cid", async (req, res) => {
+  const cartId = req.params.cid;
+  try {
+      const carritoActualizado = await cartM.deleteAllProductsFromCart(cartId);
+      res.json(carritoActualizado.products);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
 export default router; // Exporta el enrutador para que pueda ser utilizado en otras partes de la aplicación
 
