@@ -1,5 +1,6 @@
 // Importa la biblioteca mongoose para trabajar con la base de datos MongoDB
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 // Define el esquema para los productos
 const productSchema = new mongoose.Schema({
@@ -46,6 +47,9 @@ const productSchema = new mongoose.Schema({
     },
 });
 
+productSchema.plugin(mongoosePaginate);
 // Crea y exporta el modelo de productos basado en el esquema definido
 export const productsModel = mongoose.model("Product", productSchema);
+
+
 

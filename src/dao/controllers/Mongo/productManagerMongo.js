@@ -50,6 +50,7 @@ export default class ProductManager {
         };
     } catch (error) {
         console.log("Error al obtener productos", error);
+
         throw error;
     }
   };

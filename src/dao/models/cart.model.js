@@ -1,5 +1,6 @@
 // Importa la biblioteca mongoose para trabajar con la base de datos MongoDB
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 // Define el esquema para los carritos de compra
 const cartSchema = new mongoose.Schema({
@@ -20,6 +21,6 @@ const cartSchema = new mongoose.Schema({
         },
     ],
 });
-
+cartSchema.plugin(mongoosePaginate);
 // Crea y exporta el modelo de carritos basado en el esquema definido
 export const cartModel = mongoose.model("Cart", cartSchema);
