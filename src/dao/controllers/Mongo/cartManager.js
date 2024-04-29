@@ -72,7 +72,6 @@ export default class CartManager {
             throw error;
         }
     }
-
     // Método para eliminar un producto de un carrito
     async deleteProductFromCart(cartId, productId) {
         try {
@@ -82,17 +81,31 @@ export default class CartManager {
                 console.log("El carrito no existe.");
                 return null;
             }
-
+    
             // Filtra los productos para eliminar el producto especificado
-            carrito.products = carrito.products.filter(
-                (item) => item.product.toString() !== productId
-            );
-
+            carrito.products = carrito.products.filter(producto => producto.product._id.toString() !== productId);
+    
             // Guarda el carrito actualizado
             await carrito.save();
             return carrito;
         } catch (error) {
             console.error("Error al eliminar un producto del carrito:", error);
+            throw error;
+        }
+    }
+
+    
+   
+    async deleteAllProductsFromCart(cartId) {
+        try {
+            const carrito = await this.getCartById(cartId);
+            // Vacía la lista de productos
+            carrito.products = [];
+            // Guarda el carrito actualizado en la base de datos
+            await carrito.save();
+            return carrito;
+        } catch (error) {
+            console.log("Error al eliminar todos los productos del carrito", error);
             throw error;
         }
     }
@@ -109,7 +122,7 @@ export default class CartManager {
 
             // Encuentra el producto específico en el carrito
             const productInCart = carrito.products.find(
-                (item) => item.product.toString() === productId
+                (producto) => producto.product._id.toString() === productId
             );
 
             // Si el producto se encuentra, actualiza la cantidad

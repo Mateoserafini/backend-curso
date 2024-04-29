@@ -9,7 +9,7 @@ const router = Router(); // Crea una instancia del enrutador de Express
 // Ruta para agregar un nuevo carrito
 router.post("/", async (req, res) => {
   try {
-    const newCart = await cartM.addCart(); // Llama al método addCart() para crear un nuevo carrito
+    const newCart = await cartM.createCart(); // Llama al método addCart() para crear un nuevo carrito
     res.json(newCart); // Envía el nuevo carrito como respuesta en formato JSON
   } catch (error) {
     console.error(error); // Imprime el error en la consola
@@ -50,8 +50,17 @@ router.post("/:cid/product/:pid", async (req, res) => {
 router.delete("/:cid/products/:pid", async (req, res) => {
   const cartId = req.params.cid;
   const productId = req.params.pid;
+
   try {
+      // Llama al método para eliminar un producto del carrito
       const carritoActualizado = await cartM.deleteProductFromCart(cartId, productId);
+
+      // Verifica si el carrito se actualizó correctamente
+      if (!carritoActualizado) {
+          return res.status(404).json({ error: "No se encontró el carrito o el producto" });
+      }
+
+      // Responde con los productos actualizados del carrito
       res.json(carritoActualizado.products);
   } catch (error) {
       console.error(error);
@@ -74,7 +83,7 @@ router.put("/:cid", async (req, res) => {
 router.put("/:cid/products/:pid", async (req, res) => {
   const cartId = req.params.cid;
   const productId = req.params.pid;
-  const newQuantity = req.body.quantity; // Obtiene la nueva cantidad del cuerpo de la solicitud
+  const newQuantity = req.body.quantity; 
   try {
       const carritoActualizado = await cartM.updateProductQuantity(cartId, productId, newQuantity);
       res.json(carritoActualizado.products);
