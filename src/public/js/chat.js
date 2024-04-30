@@ -9,14 +9,12 @@ let usuario = null; // Variable para almacenar el nombre del usuario
 // Si el usuario no está definido, muestra un cuadro de diálogo para ingresar su nombre
 if (!usuario) {
   Swal.fire({
-    title: "Bienvenido al chat de la comunidad skater",
+    title: "Bienvenido al chat",
     text: "Ingresa tu usuario",
     input: "text",
     inputValidator: (value) => {
-      if (!value) {
-        return "Necesitas ingresar tu usuario o alias";
-      }
-    },
+        return !value && "Necesitas escribir un nombre para continuar";
+    },allowOutsideClick: false,
   }).then((username) => {
     usuario = username.value; // Guarda el nombre del usuario ingresado
     nombreUsuario.innerHTML = usuario; // Muestra el nombre del usuario en el elemento correspondiente
