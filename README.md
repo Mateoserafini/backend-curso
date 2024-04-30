@@ -1,8 +1,6 @@
-# API de Productos y Carritos
+# Hola Fede
 
-## Descripción
-
-Este repositorio contiene una API que gestiona productos y carritos de compra. Los productos están almacenados en formato JSON y los carritos de compra están inicialmente vacíos.
+## Leeme
 
 ## Instrucciones para las pruebas
 
