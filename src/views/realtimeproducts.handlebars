@@ -1,7 +1,15 @@
+<!-- Encabezado para la sección de creación de productos -->
 <h1>Crear producto</h1>
+<!-- Incluye un formulario de creación de productos a través de una plantilla parcial -->
 {{> formsRealTime}}
+
+<!-- Encabezado para la sección de productos creados -->
 <h1>Productos creados</h1>
+<!-- Contenedor para la lista de productos creados -->
 <div id="list-products"></div>
 
+<!-- Scripts necesarios para la funcionalidad en tiempo real -->
+<!-- Script para incluir la funcionalidad de Socket.io -->
 <script src="/socket.io/socket.io.js"></script>
+<!-- Script para incluir la lógica de la funcionalidad en tiempo real -->
 <script src="/js/realtime.js"></script>

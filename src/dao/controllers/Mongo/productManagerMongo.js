@@ -1,7 +1,7 @@
-// Importa el modelo de productos desde el archivo correspondiente
+// Importo el modelo de productos desde el archivo correspondiente
 import { productsModel } from "../../models/products.model.js";
 
-// Define la clase ProductManager para manejar operaciones relacionadas con productos
+// Defino la clase ProductManager para manejar operaciones relacionadas con productos
 export default class ProductManager {
   // Método para obtener todos los productos
   getProducts = async (queryParams) => {
@@ -9,14 +9,14 @@ export default class ProductManager {
         const { limit = 10, page = 1, sort, query } = queryParams;
         const skip = (page - 1) * limit;
 
-        // Construye la consulta
+        // Construyo la consulta
         let filter = {};
         if (query) {
-            // Permite filtrar por categoría o disponibilidad
+            // Permito filtrar por categoría o disponibilidad
             filter = { ...filter, $or: [{ category: query }, { availability: query }] };
         }
 
-        // Configura el sort si se proporciona
+        // Configuro el sort si se proporciona
         let sortOption = {};
         if (sort === 'asc') {
             sortOption = { price: 1 };
@@ -24,18 +24,18 @@ export default class ProductManager {
             sortOption = { price: -1 };
         }
 
-        // Obtiene productos de la base de datos según los filtros, limit y sort especificados
+        // Obtengo productos de la base de datos según los filtros, limit y sort especificados
         const products = await productsModel.find(filter).sort(sortOption).skip(skip).limit(limit);
         const totalProducts = await productsModel.countDocuments(filter);
         const totalPages = Math.ceil(totalProducts / limit);
 
-        // Calcula las páginas previas y siguientes
+        // Calculo las páginas previas y siguientes
         const hasPrevPage = page > 1;
         const hasNextPage = page < totalPages;
         const prevPage = hasPrevPage ? page - 1 : null;
         const nextPage = hasNextPage ? page + 1 : null;
 
-        // Retorna un objeto con los datos requeridos
+        // Retorno un objeto con los datos requeridos
         return {
             status: "success",
             payload: products,
@@ -50,7 +50,7 @@ export default class ProductManager {
         };
     } catch (error) {
         console.log("Error al obtener productos", error);
-
+        // Lanza el error para ser manejado por quien llame a la función
         throw error;
     }
   };
@@ -58,12 +58,12 @@ export default class ProductManager {
   // Método para obtener todos los productos en formato lean (sin métodos de Mongoose)
   getProductsView = async () => {
     try {
-      // Retorna todos los productos en formato lean
+      // Retorno todos los productos en formato lean
       return await productsModel.find().lean();
     } catch (error) {
-      // Registra un error en la consola si ocurre durante la obtención de productos
+      // Registro un error en la consola si ocurre durante la obtención de productos
       console.log("Error al obtener productos en formato lean", error);
-      // Lanza el error para ser manejado por el que llame a la función
+      // Lanzo el error para ser manejado por quien llame a la función
       throw error;
     }
   };
@@ -71,7 +71,7 @@ export default class ProductManager {
   // Método para obtener un producto por ID
   async getProductById(id) {
     try {
-      // Busca el producto por ID en la base de datos
+      // Busco el producto por ID en la base de datos
       const producto = await productsModel.findById(id);
       if (!producto) {
         console.log("Producto no encontrado");
@@ -80,9 +80,9 @@ export default class ProductManager {
       console.log("Producto encontrado");
       return producto;
     } catch (error) {
-      // Registra un error en la consola si ocurre durante la búsqueda del producto por ID
+      // Registro un error en la consola si ocurre durante la búsqueda del producto por ID
       console.log("Error al encontrar producto por ID", error);
-      // Lanza el error para ser manejado por el que llame a la función
+      // Lanzo el error para ser manejado por quien llame a la función
       throw error;
     }
   }
@@ -90,14 +90,14 @@ export default class ProductManager {
   // Método para agregar un nuevo producto
   addProduct = async (product) => {
     try {
-      // Crea un nuevo producto en la base de datos
+      // Creo un nuevo producto en la base de datos
       await productsModel.create(product);
-      // Retorna el producto recién creado
+      // Retorno el producto recién creado
       return await productsModel.findOne({ title: product.title });
     } catch (error) {
-      // Registra un error en la consola si ocurre durante la creación del producto
+      // Registro un error en la consola si ocurre durante la creación del producto
       console.log("Error al crear un producto", error);
-      // Lanza el error para ser manejado por el que llame a la función
+      // Lanzo el error para ser manejado por quien llame a la función
       throw error;
     }
   };
@@ -105,7 +105,7 @@ export default class ProductManager {
   // Método para actualizar un producto por ID
   async updateProduct(id, productoActualizado) {
     try {
-      // Actualiza el producto por ID en la base de datos
+      // Actualizo el producto por ID en la base de datos
       const updateProduct = await productsModel.findByIdAndUpdate(
         id,
         productoActualizado,
@@ -118,9 +118,9 @@ export default class ProductManager {
       console.log("Producto actualizado");
       return updateProduct;
     } catch (error) {
-      // Registra un error en la consola si ocurre durante la actualización del producto por ID
+      // Registro un error en la consola si ocurre durante la actualización del producto por ID
       console.log("Error al actualizar producto por ID", error);
-      // Lanza el error para ser manejado por el que llame a la función
+      // Lanzo el error para ser manejado por quien llame a la función
       throw error;
     }
   }
@@ -128,7 +128,7 @@ export default class ProductManager {
   // Método para eliminar un producto por ID
   async deleteProduct(id) {
     try {
-      // Elimina el producto por ID de la base de datos
+      // Elimino el producto por ID de la base de datos
       const deleteProduct = await productsModel.findByIdAndDelete(id);
 
       if (!deleteProduct) {
@@ -137,9 +137,9 @@ export default class ProductManager {
       }
       console.log("Producto eliminado");
     } catch (error) {
-      // Registra un error en la consola si ocurre durante la eliminación del producto por ID
+      // Registro un error en la consola si ocurre durante la eliminación del producto por ID
       console.log("Error al eliminar producto por ID", error);
-      // Lanza el error para ser manejado por el que llame a la función
+      // Lanzo el error para ser manejado por quien llame a la función
       throw error;
     }
   }

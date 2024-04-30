@@ -1,4 +1,4 @@
-// Importa los modelos de carrito y productos
+// Importo los modelos de carrito y productos
 import { cartModel } from "../../models/cart.model.js";
 
 // Clase que gestiona los carritos de compra
@@ -9,11 +9,11 @@ export default class CartManager {
     // Método para crear un nuevo carrito de compra
     async createCart() {
         try {
-            // Crea un nuevo carrito con una lista vacía de productos
+            // Creo un nuevo carrito con una lista vacía de productos
             const newCart = new cartModel({ products: [] });
-            // Guarda el nuevo carrito en la base de datos
+            // Guardo el nuevo carrito en la base de datos
             await newCart.save();
-            // Retorna el nuevo carrito creado
+            // Retorno el nuevo carrito creado
             return newCart;
         } catch (error) {
             console.error("Error al crear un nuevo carrito:", error);
@@ -24,16 +24,16 @@ export default class CartManager {
     // Método para obtener un carrito por su ID
     async getCartById(cartId) {
         try {
-            // Busca el carrito por su ID y utiliza populate para poblar los productos asociados
+            // Busco el carrito por su ID y utilizo populate para poblar los productos asociados
             const carrito = await cartModel.findById(cartId).populate('products.product');
 
-            // Verifica si el carrito existe
+            // Verifico si el carrito existe
             if (!carrito) {
                 console.log("El carrito con el ID especificado no existe.");
                 return null;
             }
 
-            // Retorna el carrito con los productos poblados
+            // Retorno el carrito con los productos poblados
             return carrito;
         } catch (error) {
             console.error("Error al obtener el carrito por su ID:", error);
@@ -44,27 +44,27 @@ export default class CartManager {
     // Método para agregar un producto a un carrito
     async addProductToCart(cartId, productId, quantity = 1) {
         try {
-            // Obtiene el carrito por su ID
+            // Obtengo el carrito por su ID
             const carrito = await this.getCartById(cartId);
             if (!carrito) {
                 console.log("El carrito no existe.");
                 return null;
             }
 
-            // Verifica si el producto ya existe en el carrito
+            // Verifico si el producto ya existe en el carrito
             const productInCart = carrito.products.find(
                 (item) => item.product.toString() === productId
             );
 
-            // Si el producto ya existe en el carrito, actualiza la cantidad
+            // Si el producto ya existe en el carrito, actualizo la cantidad
             if (productInCart) {
                 productInCart.quantity += quantity;
             } else {
-                // Si el producto no existe en el carrito, lo agrega con la cantidad especificada
+                // Si el producto no existe en el carrito, lo agrego con la cantidad especificada
                 carrito.products.push({ product: productId, quantity });
             }
 
-            // Guarda el carrito actualizado
+            // Guardo el carrito actualizado
             await carrito.save();
             return carrito;
         } catch (error) {
@@ -72,20 +72,21 @@ export default class CartManager {
             throw error;
         }
     }
+
     // Método para eliminar un producto de un carrito
     async deleteProductFromCart(cartId, productId) {
         try {
-            // Obtiene el carrito por su ID
+            // Obtengo el carrito por su ID
             const carrito = await this.getCartById(cartId);
             if (!carrito) {
                 console.log("El carrito no existe.");
                 return null;
             }
-    
-            // Filtra los productos para eliminar el producto especificado
+
+            // Elimino el producto especificado filtrando la lista de productos
             carrito.products = carrito.products.filter(producto => producto.product._id.toString() !== productId);
-    
-            // Guarda el carrito actualizado
+
+            // Guardo el carrito actualizado
             await carrito.save();
             return carrito;
         } catch (error) {
@@ -94,14 +95,14 @@ export default class CartManager {
         }
     }
 
-    
-   
+    // Método para eliminar todos los productos de un carrito
     async deleteAllProductsFromCart(cartId) {
         try {
+            // Obtengo el carrito por su ID
             const carrito = await this.getCartById(cartId);
-            // Vacía la lista de productos
+            // Vacío la lista de productos
             carrito.products = [];
-            // Guarda el carrito actualizado en la base de datos
+            // Guardo el carrito actualizado en la base de datos
             await carrito.save();
             return carrito;
         } catch (error) {
@@ -113,22 +114,22 @@ export default class CartManager {
     // Método para actualizar la cantidad de un producto en el carrito
     async updateProductQuantity(cartId, productId, newQuantity) {
         try {
-            // Obtiene el carrito por su ID
+            // Obtengo el carrito por su ID
             const carrito = await this.getCartById(cartId);
             if (!carrito) {
                 console.log("El carrito no existe.");
                 return null;
             }
 
-            // Encuentra el producto específico en el carrito
+            // Encuentro el producto específico en el carrito
             const productInCart = carrito.products.find(
                 (producto) => producto.product._id.toString() === productId
             );
 
-            // Si el producto se encuentra, actualiza la cantidad
+            // Si el producto se encuentra, actualizo la cantidad
             if (productInCart) {
                 productInCart.quantity = newQuantity;
-                // Guarda el carrito actualizado
+                // Guardo el carrito actualizado
                 await carrito.save();
                 return carrito;
             } else {
@@ -144,16 +145,16 @@ export default class CartManager {
     // Método para vaciar todos los productos de un carrito
     async clearCart(cartId) {
         try {
-            // Obtiene el carrito por su ID
+            // Obtengo el carrito por su ID
             const carrito = await this.getCartById(cartId);
             if (!carrito) {
                 console.log("El carrito no existe.");
                 return null;
             }
 
-            // Vacía la lista de productos en el carrito
+            // Vacío la lista de productos en el carrito
             carrito.products = [];
-            // Guarda el carrito actualizado
+            // Guardo el carrito actualizado
             await carrito.save();
             return carrito;
         } catch (error) {
@@ -165,16 +166,16 @@ export default class CartManager {
     // Método para actualizar un carrito completo con un nuevo arreglo de productos
     async updateCart(cartId, productsArray) {
         try {
-            // Obtiene el carrito por su ID
+            // Obtengo el carrito por su ID
             const carrito = await this.getCartById(cartId);
             if (!carrito) {
                 console.log("El carrito no existe.");
                 return null;
             }
 
-            // Reemplaza los productos actuales con el nuevo arreglo de productos
+            // Reemplazo los productos actuales con el nuevo arreglo de productos
             carrito.products = productsArray;
-            // Guarda el carrito actualizado
+            // Guardo el carrito actualizado
             await carrito.save();
             return carrito;
         } catch (error) {
