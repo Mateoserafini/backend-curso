@@ -102,4 +102,19 @@ router.get('/carts/:cid', async (req, res) => {
   }
 });
 
+router.get('/login', (req,res) => {
+  res.render('login')
+})
+
+router.get('/register', (req,res) => {
+  res.render('register')
+})
+
+router.get('/profile', (req,res) => {
+  if(!req.session.login){
+      return res.redirect('/login')
+  }
+  res.render('profile')
+})
+
 export default router; // Exporta el enrutador para que pueda ser utilizado en otras partes de la aplicación
