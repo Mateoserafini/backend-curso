@@ -76,6 +76,7 @@ router.get('/products', async (req, res) => {
 
     // Renderiza la vista 'products' con los datos de paginación
     res.render('products', {
+      user: req.session.user.first_name,
       products: result.docs,
       page: result.page,
       totalPages: result.totalPages,

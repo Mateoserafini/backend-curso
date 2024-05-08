@@ -18,7 +18,7 @@ router.post("/login", async (req, res) => {
                     email: userFound.email,
                     first_name: userFound.first_name,
                 };
-                res.redirect("/profile");
+                res.redirect("/");
             } else {
                 res.status(401).send("Contraseña no válida");
             }
