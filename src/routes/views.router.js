@@ -11,17 +11,25 @@ const router = Router(); // Crea una instancia del enrutador de Express
 
 // Ruta para renderizar la vista principal con la lista de productos
 router.get("/", async (req, res) => {
+  if (!req.session.login) {
+    return res.redirect('/login');
+  }
+
   try {
-    const listadeproductos = await prodM.getProductsView(); // Obtiene la lista de productos para la vista
-    res.render("home", { listadeproductos }); // Renderiza la vista 'home' con la lista de productos
+    const user = req.session.user.first_name;
+    const listadeproductos = await prodM.getProductsView();
+    res.render("home", { listadeproductos, user });
   } catch (error) {
-    console.error(error); // Muestra el error en la consola
-    res.status(500).json({ error: "Error interno del servidor" }); // Responde con un error interno del servidor
+    console.error(error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 
 // Ruta para renderizar la vista 'realtimeproducts' (productos en tiempo real)
 router.get("/realtimeproducts", (req, res) => {
+  if(!req.session.login){
+    return res.redirect('/login')
+  }
   try {
     res.render("realtimeproducts"); // Renderiza la vista 'realtimeproducts'
   } catch (error) {
@@ -32,6 +40,10 @@ router.get("/realtimeproducts", (req, res) => {
 
 // Ruta para renderizar la vista 'chat'
 router.get("/chat", (req, res) => {
+  if(!req.session.login){
+    return res.redirect('/login')
+  }
+
   try {
     res.render("chat"); // Renderiza la vista 'chat'
   } catch (error) {
@@ -42,6 +54,11 @@ router.get("/chat", (req, res) => {
 
 // Ruta para obtener la lista de productos con paginación
 router.get('/products', async (req, res) => {
+
+  if(!req.session.login){
+    return res.redirect('/login')
+  }
+
   let { page = 1, limit = 10 } = req.query; // Obtiene los parámetros de consulta para paginación
   page = parseInt(page, 10); // Convierte la página a un número entero
   limit = parseInt(limit, 10); // Convierte el límite a un número entero
@@ -76,6 +93,10 @@ router.get('/products', async (req, res) => {
 
 // Ruta para obtener los detalles de un carrito por su ID
 router.get('/carts/:cid', async (req, res) => {
+  if(!req.session.login){
+    return res.redirect('/login')
+  }
+
   const cartId = req.params.cid; // Obtiene el ID del carrito
 
   try {
