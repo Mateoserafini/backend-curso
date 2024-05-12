@@ -2,6 +2,7 @@ import passport from "passport";
 import local from "passport-local";
 import UsuarioModel from "../dao/models/usuario.model.js";
 import bcrypt from "bcryptjs";
+import GitHubStrategy from "passport-github2";
 
 const LocalStrategy = local.Strategy;
 
@@ -54,20 +55,20 @@ const initializePassport = () => {
       async (email, password, done) => {
         try {
           const userFound = await UsuarioModel.findOne({ email });
-  
+
           if (userFound) {
             const isMatch = await bcrypt.compare(password, userFound.password);
-  
+
             if (isMatch) {
               return done(null, userFound);
             } else {
               return done(null, false);
             }
           } else {
-            return done(null, false); 
+            return done(null, false);
           }
         } catch (error) {
-          return done(error); 
+          return done(error);
         }
       }
     )
@@ -84,5 +85,43 @@ const initializePassport = () => {
     done(null, user);
   });
 };
+
+passport.use(
+  "github",
+  new GitHubStrategy(
+    {
+      clientID: "Iv23lio4myBKlTyBREyQ",
+      clientSecret: "c1ff08a42cd5ca801e007e076be036cfe5344c4e",
+      callbackURL: "http://localhost:8080/api/sessions/githubcallback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+
+      console.log("Profile:", profile);
+
+      try {
+        let usuario = await UsuarioModel.findOne({
+          email: profile._json.email,
+        });
+
+        if (!usuario) {
+          let nuevoUsuario = {
+            first_name: profile._json.name,
+            last_name: "",
+            age: 36,
+            email: profile._json.email,
+            password: "messi",
+          };
+
+          let resultado = await UsuarioModel.create(nuevoUsuario);
+          done(null, resultado);
+        } else {
+          done(null, usuario);
+        }
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
 
 export default initializePassport;
