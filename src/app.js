@@ -14,6 +14,8 @@ import userRouter from './routes/user.router.js'
 import sessionsRouter from './routes/session.router.js'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import passport from "passport";
+import initializePassport from "./config/passport.config.js";
 
 // Crea una instancia de la aplicación Express
 const app = express();
@@ -40,6 +42,10 @@ app.use(session({
       mongoUrl: "mongodb+srv://matuserafini:45089673@cluster0.frnygq1.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0", ttl: 15
   })
 }))
+
+app.use(passport.initialize());
+app.use(passport.session());
+initializePassport(); 
 
 // Configura las rutas de la aplicación
 app.use("/api/users", userRouter)

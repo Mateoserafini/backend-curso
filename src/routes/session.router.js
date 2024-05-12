@@ -1,9 +1,10 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
-import UsuarioModel from '../dao/models/usuario.model.js';
-import bcrypt from 'bcryptjs';
+import UsuarioModel from "../dao/models/usuario.model.js";
+import bcrypt from "bcryptjs";
+import passport from "passport";
 
-router.post("/login", async (req, res) => {
+/* router.post("/login", async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -29,19 +30,57 @@ router.post("/login", async (req, res) => {
         res.status(500).send("Error en el login");
         console.error("Error en el login:", error); // Para depuración adicional
     }
-});
+}); */
 
-router.get("/logout", async (req, res) => {
-    if (req.session && req.session.login) {
-        try {
-            await new Promise((resolve, reject) => req.session.destroy(err => err ? reject(err) : resolve()));
-            res.redirect("/login");
-        } catch (err) {
-            res.status(500).send("Error al cerrar sesión");
+router.post(
+    "/login",
+    passport.authenticate("login", {
+      failureRedirect: "/api/sessions/faillogin",
+    }),
+    async (req, res) => {
+      try {
+        // Si no hay usuario en la sesión, las credenciales son inválidas
+        if (!req.user) {
+          return res.status(400).send("Credenciales inválidas");
         }
-    } else {
-        res.redirect("/login");
+        
+        // Asignar la información del usuario a la sesión
+        req.session.user = {
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            age: req.user.age,
+            email: req.user.email
+        };
+  
+        // Establecer la sesión como autenticada
+        req.session.login = true;
+  
+        // Redirigir al perfil del usuario
+        res.redirect("/profile");
+      } catch (error) {
+        console.error("Error en el inicio de sesión:", error);
+        res.status(500).send("Error en el inicio de sesión");
+      }
     }
-});
-
-export default router;
+  );
+  
+  router.get("/faillogin", (req, res) => {
+    res.send("Inicio de sesión fallido");
+  });
+  
+  router.get("/logout", async (req, res) => {
+    if (req.session && req.session.login) {
+      try {
+        await new Promise((resolve, reject) =>
+          req.session.destroy((err) => (err ? reject(err) : resolve()))
+        );
+        res.redirect("/login");
+      } catch (err) {
+        res.status(500).send("Error al cerrar sesión");
+      }
+    } else {
+      res.redirect("/login");
+    }
+  });
+  
+  export default router;
