@@ -3,35 +3,38 @@
 
 <!-- Contenedor de los productos -->
 <div>
-    <!-- Recorre la lista de productos -->
-    {{#each products}}
+  <!-- Recorre la lista de productos -->
+  {{#each products}}
     <!-- Contenedor individual de cada producto -->
     <div>
-        <!-- Título del producto -->
-        <h2>{{this.title}}</h2>
-        <!-- Descripción del producto -->
-        <p>{{this.description}}</p>
-        <!-- Categoría del producto -->
-        <p>Categoría: {{this.category}}</p>
-        <!-- Precio del producto -->
-        <p>${{this.price}}</p>
-        <!-- Botón para agregar el producto al carrito, usando el ID del producto como atributo de datos -->
-        <button data-product-id="{{this._id}}" class="">Agregar al Carrito</button>
+      <!-- Título del producto -->
+      <h2>{{this.title}}</h2>
+      <!-- Descripción del producto -->
+      <p>{{this.description}}</p>
+      <!-- Categoría del producto -->
+      <p>Categoría: {{this.category}}</p>
+      <!-- Precio del producto -->
+      <p>${{this.price}}</p>
+      <!-- Botón para agregar el producto al carrito, usando el ID del producto como atributo de datos -->
+      <button data-product-id="{{this._id}}" class="">Agregar al Carrito</button>
     </div>
     <!-- Fin del contenedor individual de cada producto -->
-    {{/each}}
+  {{/each}}
 </div>
 
 <!-- Sección de paginación -->
 <div>
-    {{!-- Verifica si hay una página anterior y muestra el enlace a la página anterior si es así --}}
-    {{#if hasPrevPage}}
+  {{! Verifica si hay una página anterior y muestra el enlace a la página anterior si es así }}
+  {{#if hasPrevPage}}
     <a href="?page={{prevPage}}&limit={{limit}}">Página Anterior</a>
-    {{/if}}
-    <!-- Muestra la página actual y el total de páginas -->
-    Página {{page}} de {{totalPages}}
-    {{!-- Verifica si hay una página siguiente y muestra el enlace a la página siguiente si es así --}}
-    {{#if hasNextPage}}
+  {{/if}}
+  <!-- Muestra la página actual y el total de páginas -->
+  Página
+  {{page}}
+  de
+  {{totalPages}}
+  {{! Verifica si hay una página siguiente y muestra el enlace a la página siguiente si es así }}
+  {{#if hasNextPage}}
     <a href="?page={{nextPage}}&limit={{limit}}">Página Siguiente</a>
-    {{/if}}
+  {{/if}}
 </div>

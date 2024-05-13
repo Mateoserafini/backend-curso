@@ -1,5 +1,5 @@
 // Importo el controlador de mensajes MongoDB
-import MessageManager from "../Dao/controllers/Mongo/messageManagerMongo.js";
+import MessageManager from "../dao/controllers/Mongo/messageManagerMongo.js";
 
 // Creo una nueva instancia de MessageManager
 const message = new MessageManager();
@@ -36,4 +36,3 @@ const socketChat = (socketServer) => {
 
 // Exporto la función para manejar la conexión de sockets
 export default socketChat;
-

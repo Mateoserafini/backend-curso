@@ -1,5 +1,5 @@
 // Importa el controlador de productos MongoDB
-import ProductManager from "../Dao/controllers/Mongo/productManagerMongo.js";
+import ProductManager from "../dao/controllers/Mongo/productManagerMongo.js";
 // Importa la constante __dirname desde el archivo utils
 import { __dirname } from "../utils.js";
 

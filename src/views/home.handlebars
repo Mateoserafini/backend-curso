@@ -6,56 +6,57 @@
   <div>
     <!-- Recorre la lista de productos -->
     {{#each listadeproductos}}
-    <!-- Contenedor de cada producto -->
-    <div>
+      <!-- Contenedor de cada producto -->
       <div>
         <div>
-          <!-- Muestra el código del producto -->
-          Código del producto: {{this.code}}
-        </div>
-        <div>
-          <!-- Título del producto -->
-          <h5>{{this.title}}</h5>
-          <!-- Lista de detalles del producto -->
-          <ul>
-            <!-- Imagen del producto -->
-            <li>
-              <img src="{{this.thumbnail}}" alt="{{this.title}}" />
-            </li>
-            <!-- Descripción del producto -->
-            <li>
-              Descripción: {{this.description}}
-            </li>
-            <!-- Precio del producto -->
-            <li>
-              Precio: ${{this.price}}
-            </li>
-            <!-- Categoría del producto -->
-            <li>
-              Categoría: {{this.category}}
-            </li>
-            <!-- Estado del producto (disponible o no) -->
-            <li>
-              Estado: {{this.status}}
-            </li>
-            <!-- Unidades disponibles del producto -->
-            <li>
-              Unidades disponibles: {{this.stock}}
-            </li>
-          </ul>
+          <div>
+            <!-- Muestra el código del producto -->
+            Código del producto:
+            {{this.code}}
+          </div>
+          <div>
+            <!-- Título del producto -->
+            <h5>{{this.title}}</h5>
+            <!-- Lista de detalles del producto -->
+            <ul>
+              <!-- Imagen del producto -->
+              <li>
+                <img src="{{this.thumbnail}}" alt="{{this.title}}" />
+              </li>
+              <!-- Descripción del producto -->
+              <li>
+                Descripción:
+                {{this.description}}
+              </li>
+              <!-- Precio del producto -->
+              <li>
+                Precio: ${{this.price}}
+              </li>
+              <!-- Categoría del producto -->
+              <li>
+                Categoría:
+                {{this.category}}
+              </li>
+              <!-- Estado del producto (disponible o no) -->
+              <li>
+                Estado:
+                {{this.status}}
+              </li>
+              <!-- Unidades disponibles del producto -->
+              <li>
+                Unidades disponibles:
+                {{this.stock}}
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- Fin de cada producto -->
+      <!-- Fin de cada producto -->
     {{/each}}
   </div>
 </div>
 
 <script>
-    window.onload = function() {
-    var user = '{{user}}';
-    if (user) {
-        alert(`Bienvenido al sitio web: ${user}!`);
-    }
-};
-  </script>
+  window.onload = function() { var user = '{{user}}'; if (user) {
+  alert(`Bienvenido al sitio web: ${user}!`); } };
+</script>

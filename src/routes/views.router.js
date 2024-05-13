@@ -1,10 +1,10 @@
 import { Router } from "express";
-import ProductManager from "../Dao/controllers/Mongo/productManagerMongo.js";
+import ProductManager from "../dao/controllers/Mongo/productManagerMongo.js";
 import { __dirname } from "../utils.js";
 
 // Importa los modelos que se utilizarán para manejar las consultas a la base de datos
-import { productsModel } from "../Dao/models/products.model.js";
-import { cartModel } from "../Dao/models/cart.model.js";
+import { productsModel } from "../dao/models/products.model.js";
+import { cartModel } from "../dao/models/cart.model.js";
 
 const prodM = new ProductManager();
 const router = Router(); // Crea una instancia del enrutador de Express
@@ -12,7 +12,7 @@ const router = Router(); // Crea una instancia del enrutador de Express
 // Ruta para renderizar la vista principal con la lista de productos
 router.get("/", async (req, res) => {
   if (!req.session.login) {
-    return res.redirect('/login');
+    return res.redirect("/login");
   }
 
   try {
@@ -27,8 +27,8 @@ router.get("/", async (req, res) => {
 
 // Ruta para renderizar la vista 'realtimeproducts' (productos en tiempo real)
 router.get("/realtimeproducts", (req, res) => {
-  if(!req.session.login){
-    return res.redirect('/login')
+  if (!req.session.login) {
+    return res.redirect("/login");
   }
   try {
     res.render("realtimeproducts"); // Renderiza la vista 'realtimeproducts'
@@ -40,8 +40,8 @@ router.get("/realtimeproducts", (req, res) => {
 
 // Ruta para renderizar la vista 'chat'
 router.get("/chat", (req, res) => {
-  if(!req.session.login){
-    return res.redirect('/login')
+  if (!req.session.login) {
+    return res.redirect("/login");
   }
 
   try {
@@ -53,10 +53,9 @@ router.get("/chat", (req, res) => {
 });
 
 // Ruta para obtener la lista de productos con paginación
-router.get('/products', async (req, res) => {
-
-  if(!req.session.login){
-    return res.redirect('/login')
+router.get("/products", async (req, res) => {
+  if (!req.session.login) {
+    return res.redirect("/login");
   }
 
   let { page = 1, limit = 10 } = req.query; // Obtiene los parámetros de consulta para paginación
@@ -68,14 +67,14 @@ router.get('/products', async (req, res) => {
       page: page,
       limit: limit,
       lean: true,
-      leanWithId: false
+      leanWithId: false,
     };
 
     const result = await productsModel.paginate({}, options); // Realiza la paginación de productos
     console.log(result);
 
     // Renderiza la vista 'products' con los datos de paginación
-    res.render('products', {
+    res.render("products", {
       user: req.session.user.first_name,
       products: result.docs,
       page: result.page,
@@ -84,7 +83,7 @@ router.get('/products', async (req, res) => {
       hasPrevPage: result.hasPrevPage,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
-      limit: result.limit
+      limit: result.limit,
     });
   } catch (error) {
     console.error(error); // Muestra el error en la consola
@@ -93,50 +92,50 @@ router.get('/products', async (req, res) => {
 });
 
 // Ruta para obtener los detalles de un carrito por su ID
-router.get('/carts/:cid', async (req, res) => {
-  if(!req.session.login){
-    return res.redirect('/login')
+router.get("/carts/:cid", async (req, res) => {
+  if (!req.session.login) {
+    return res.redirect("/login");
   }
 
   const cartId = req.params.cid; // Obtiene el ID del carrito
 
   try {
     // Busca el carrito por su ID y lo popula con los productos
-    const cart = await cartModel.findById(cartId).populate('products.product');
+    const cart = await cartModel.findById(cartId).populate("products.product");
 
     if (!cart) {
       return res.status(404).json({ error: "Carrito no encontrado" }); // Responde con un error si el carrito no se encuentra
     }
 
     // Calcula el subtotal de cada producto y lo añade al objeto de producto
-    const productsWithSubtotals = cart.products.map(item => {
-        return {
-            ...item.toObject(),
-            subtotal: item.quantity * item.product.price
-        };
+    const productsWithSubtotals = cart.products.map((item) => {
+      return {
+        ...item.toObject(),
+        subtotal: item.quantity * item.product.price,
+      };
     });
 
     // Renderiza la plantilla 'carts' con los productos y sus subtotales
-    res.render('carts', { products: productsWithSubtotals });
+    res.render("carts", { products: productsWithSubtotals });
   } catch (error) {
     console.error(error); // Muestra el error en la consola
     res.status(500).json({ error: "Error interno del servidor" }); // Responde con un error interno del servidor
   }
 });
 
-router.get('/login', (req,res) => {
-  res.render('login')
-})
+router.get("/login", (req, res) => {
+  res.render("login");
+});
 
-router.get('/register', (req,res) => {
-  res.render('register')
-})
+router.get("/register", (req, res) => {
+  res.render("register");
+});
 
-router.get('/profile', (req,res) => {
-  if(!req.session.login){
-      return res.redirect('/login')
+router.get("/profile", (req, res) => {
+  if (!req.session.login) {
+    return res.redirect("/login");
   }
-  res.render('profile')
-})
+  res.render("profile");
+});
 
 export default router; // Exporta el enrutador para que pueda ser utilizado en otras partes de la aplicación

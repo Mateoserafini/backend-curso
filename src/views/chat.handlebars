@@ -1,6 +1,6 @@
 <!-- Contenedor principal del chat -->
 <div id="chat-container">
-  
+
   <!-- Encabezado del chat -->
   <div id="chat-header">
     <!-- Título del chat -->
@@ -8,7 +8,7 @@
     <!-- Nombre del usuario -->
     <h5 id="nombreusuario">Nombre de usuario</h5>
   </div>
-  
+
   <!-- Mensajes del chat -->
   <div id="chat-messages">
     <div>
@@ -20,12 +20,17 @@
       <div id="chat"></div>
     </div>
   </div>
-  
+
   <!-- Formulario para enviar mensajes -->
   <form id="formulario">
     <!-- Campo de texto para escribir el mensaje -->
-    <input type="text" name="mensaje" id="mensaje" placeholder="Escriba su mensaje" />
-    
+    <input
+      type="text"
+      name="mensaje"
+      id="mensaje"
+      placeholder="Escriba su mensaje"
+    />
+
     <!-- Contenedor de botones -->
     <div>
       <!-- Botón para enviar el mensaje -->
@@ -37,7 +42,10 @@
 </div>
 
 <!-- Incluye las bibliotecas necesarias para el chat -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/toastify-js"
+></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="/socket.io/socket.io.js"></script>
 <!-- Incluye el script del chat -->

@@ -10,10 +10,10 @@ import routerViews from "./routes/views.router.js"; // Importa las rutas para la
 import cartRouter from "./routes/cart.router.js"; // Importa las rutas para carritos
 import socketProducts from "./listeners/socketProducts.js"; // Importa el controlador de productos para WebSocket
 import socketChat from "./listeners/socketChat.js"; // Importa el controlador de chat para WebSocket
-import userRouter from './routes/user.router.js'
-import sessionsRouter from './routes/session.router.js'
-import session from 'express-session'
-import MongoStore from 'connect-mongo'
+import userRouter from "./routes/user.router.js";
+import sessionsRouter from "./routes/session.router.js";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 import passport from "passport";
 import initializePassport from "./config/passport.config.js";
 
@@ -25,36 +25,37 @@ const PORT = process.env.PORT;
 
 // Configura middleware para manejar JSON y archivos estáticos
 app.use(express.json()); // Configura el manejo de datos en formato JSON
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public")); // Configura el acceso a archivos estáticos en la carpeta "public"
-
 
 // Configura el motor de plantillas Handlebars
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views"); // Establece el directorio de las vistas
 app.set("view engine", "handlebars"); // Establece Handlebars como motor de plantillas
 
-app.use(session({
-  secret:"12345678",
-  resave: true,
-  saveUninitialized: true,
-  store: MongoStore.create({
-      mongoUrl: "mongodb+srv://matuserafini:45089673@cluster0.frnygq1.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0", ttl: 15
+app.use(
+  session({
+    secret: "12345678",
+    resave: true,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://matuserafini:45089673@cluster0.frnygq1.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0",
+      ttl: 15,
+    }),
   })
-}))
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
-initializePassport(); 
+initializePassport();
 
 // Configura las rutas de la aplicación
-app.use("/api/users", userRouter)
-app.use("/api/sessions", sessionsRouter)
+app.use("/api/users", userRouter);
+app.use("/api/sessions", sessionsRouter);
 app.use("/api/products", routerProduct); // Establece las rutas para productos
 app.use("/api/carts", cartRouter); // Establece las rutas para carritos
 app.use("/", routerViews); // Establece las rutas para las vistas
-
-
 
 // Inicia el servidor HTTP y escucha en el puerto especificado
 const httpServer = app.listen(PORT, () => {

@@ -3,13 +3,13 @@
 
 <!-- Inicia un bloque para iterar sobre cada producto en el carrito -->
 {{#each products}}
-<div>
+  <div>
     <!-- Muestra el nombre del producto -->
     <h2>{{this.product.title}}</h2>
     <!-- Muestra la cantidad de unidades del producto en el carrito -->
     <p>Cantidad: {{this.quantity}}</p>
     <!-- Muestra el subtotal del producto (cantidad * precio) -->
     <p>Subtotal: ${{this.subtotal}}</p>
-</div>
-<!-- Finaliza el bloque de iteración sobre los productos -->
+  </div>
+  <!-- Finaliza el bloque de iteración sobre los productos -->
 {{/each}}

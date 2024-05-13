@@ -6,52 +6,63 @@ export default class ProductManager {
   // Método para obtener todos los productos
   getProducts = async (queryParams) => {
     try {
-        const { limit = 10, page = 1, sort, query } = queryParams;
-        const skip = (page - 1) * limit;
+      const { limit = 10, page = 1, sort, query } = queryParams;
+      const skip = (page - 1) * limit;
 
-        // Construyo la consulta
-        let filter = {};
-        if (query) {
-            // Permito filtrar por categoría o disponibilidad
-            filter = { ...filter, $or: [{ category: query }, { availability: query }] };
-        }
-
-        // Configuro el sort si se proporciona
-        let sortOption = {};
-        if (sort === 'asc') {
-            sortOption = { price: 1 };
-        } else if (sort === 'desc') {
-            sortOption = { price: -1 };
-        }
-
-        // Obtengo productos de la base de datos según los filtros, limit y sort especificados
-        const products = await productsModel.find(filter).sort(sortOption).skip(skip).limit(limit);
-        const totalProducts = await productsModel.countDocuments(filter);
-        const totalPages = Math.ceil(totalProducts / limit);
-
-        // Calculo las páginas previas y siguientes
-        const hasPrevPage = page > 1;
-        const hasNextPage = page < totalPages;
-        const prevPage = hasPrevPage ? page - 1 : null;
-        const nextPage = hasNextPage ? page + 1 : null;
-
-        // Retorno un objeto con los datos requeridos
-        return {
-            status: "success",
-            payload: products,
-            totalPages,
-            prevPage,
-            nextPage,
-            page,
-            hasPrevPage,
-            hasNextPage,
-            prevLink: hasPrevPage ? `/api/products?page=${prevPage}&limit=${limit}` : null,
-            nextLink: hasNextPage ? `/api/products?page=${nextPage}&limit=${limit}` : null,
+      // Construyo la consulta
+      let filter = {};
+      if (query) {
+        // Permito filtrar por categoría o disponibilidad
+        filter = {
+          ...filter,
+          $or: [{ category: query }, { availability: query }],
         };
+      }
+
+      // Configuro el sort si se proporciona
+      let sortOption = {};
+      if (sort === "asc") {
+        sortOption = { price: 1 };
+      } else if (sort === "desc") {
+        sortOption = { price: -1 };
+      }
+
+      // Obtengo productos de la base de datos según los filtros, limit y sort especificados
+      const products = await productsModel
+        .find(filter)
+        .sort(sortOption)
+        .skip(skip)
+        .limit(limit);
+      const totalProducts = await productsModel.countDocuments(filter);
+      const totalPages = Math.ceil(totalProducts / limit);
+
+      // Calculo las páginas previas y siguientes
+      const hasPrevPage = page > 1;
+      const hasNextPage = page < totalPages;
+      const prevPage = hasPrevPage ? page - 1 : null;
+      const nextPage = hasNextPage ? page + 1 : null;
+
+      // Retorno un objeto con los datos requeridos
+      return {
+        status: "success",
+        payload: products,
+        totalPages,
+        prevPage,
+        nextPage,
+        page,
+        hasPrevPage,
+        hasNextPage,
+        prevLink: hasPrevPage
+          ? `/api/products?page=${prevPage}&limit=${limit}`
+          : null,
+        nextLink: hasNextPage
+          ? `/api/products?page=${nextPage}&limit=${limit}`
+          : null,
+      };
     } catch (error) {
-        console.log("Error al obtener productos", error);
-        // Lanza el error para ser manejado por quien llame a la función
-        throw error;
+      console.log("Error al obtener productos", error);
+      // Lanza el error para ser manejado por quien llame a la función
+      throw error;
     }
   };
 

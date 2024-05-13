@@ -95,7 +95,6 @@ passport.use(
       callbackURL: "http://localhost:8080/api/sessions/githubcallback",
     },
     async (accessToken, refreshToken, profile, done) => {
-
       console.log("Profile:", profile);
 
       try {

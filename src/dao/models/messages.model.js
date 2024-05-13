@@ -6,15 +6,15 @@ const messageSchema = new mongoose.Schema(
   {
     // Campo para el nombre del usuario que envió el mensaje
     user: {
-        type: String,
-        required: true, // Este campo es obligatorio
-        trim: true // Elimino los espacios en blanco iniciales y finales
+      type: String,
+      required: true, // Este campo es obligatorio
+      trim: true, // Elimino los espacios en blanco iniciales y finales
     },
     // Campo para el contenido del mensaje
     message: {
-        type: String,
-        required: true, // Este campo es obligatorio
-        trim: true // Elimino los espacios en blanco iniciales y finales
+      type: String,
+      required: true, // Este campo es obligatorio
+      trim: true, // Elimino los espacios en blanco iniciales y finales
     },
   },
   // Configuración adicional para agregar marcas de tiempo (createdAt y updatedAt)
