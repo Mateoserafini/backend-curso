@@ -1,5 +1,4 @@
 import express from "express";
-import UsuarioModel from "../dao/models/usuario.model.js";
 import passport from "passport";
 import CartManager from "../dao/controllers/Mongo/cartManager.js";
 

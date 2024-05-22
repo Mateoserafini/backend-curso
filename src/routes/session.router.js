@@ -1,8 +1,8 @@
 import express from "express";
 const router = express.Router();
-import UsuarioModel from "../dao/models/usuario.model.js";
-import bcrypt from "bcryptjs";
 import passport from "passport";
+import CartManager from "../dao/controllers/Mongo/cartManager.js";
+const cartManager = new CartManager();
 
 /* router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -97,10 +97,34 @@ router.get(
     failureRedirect: "/login",
   }),
   async (req, res) => {
-    //La estrategia de Github nos retornará el usuario, entonces los agrego a mi objeto de Session:
-    req.session.user = req.user;
-    req.session.login = true;
-    res.redirect("/profile");
+    try {
+      // Verificar si el usuario ya tiene un carrito asignado
+      const userWithCart = req.user;
+      if (!userWithCart.cart) {
+        // Si no tiene un carrito asignado, crearemos uno nuevo
+        const newCart = await cartManager.createCart();
+        userWithCart.cart = newCart._id;
+        await userWithCart.save();
+      }
+
+      // Asignar la información del usuario a la sesión
+      req.session.user = {
+        first_name: userWithCart.first_name,
+        last_name: userWithCart.last_name,
+        age: userWithCart.age,
+        email: userWithCart.email,
+        role: userWithCart.role,
+        cart: userWithCart.cart,
+      };
+
+      // Establecer la sesión como autenticada
+      req.session.login = true;
+
+      res.redirect("/profile");
+    } catch (error) {
+      console.error("Error en el inicio de sesión:", error);
+      res.status(500).send("Error en el inicio de sesión");
+    }
   }
 );
 
