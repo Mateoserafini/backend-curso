@@ -1,61 +1,30 @@
 import express from "express";
-const router = express.Router();
 import UsuarioModel from "../dao/models/usuario.model.js";
-import bcrypt from "bcryptjs";
-const ADMIN = "matuserafini@gmail.com";
 import passport from "passport";
-import { get } from "mongoose";
+import CartManager from "../dao/controllers/Mongo/cartManager.js";
 
-/* mongo db version
-router.post("/", async (req, res) => {
-    const { first_name, last_name, email, password, age, role } = req.body;
-    
-    try {
-        const userFound = await UsuarioModel.findOne({email:email});
+const router = express.Router();
+const cartManager = new CartManager();
+const ADMIN = "matuserafini@gmail.com";
 
-        if (userFound) {
-            return res.status(400).send('El email ya existe');
-        }
-
-        const isAdmin = (email === ADMIN);
-        const passwordHash = await bcrypt.hash(password, 10);
-
-        const nuevoUsuario = await UsuarioModel.create({
-            first_name,
-            last_name,
-            email,
-            password: passwordHash,
-            age,
-            role: isAdmin,
-        });
-
-        req.session.user = {
-            email: nuevoUsuario.email,
-            first_name: nuevoUsuario.first_name,
-            role: nuevoUsuario.role,
-        };
-
-        req.session.login = true;
-
-        res.status(200).send('usuario creado con exito'
-        );
-        
-    } catch (error) {
-        console.error("Error al crear el usuario:", error); // Para depuración adicional
-        res.status(500).send('Error al crear el usuario');
-    }
-}); */
-
-/* passport version */
-
+// Ruta para registrar un nuevo usuario con Passport
 router.post(
   "/",
   passport.authenticate("register", { failureRedirect: "/failedRegister" }),
   async (req, res) => {
     // Si no se ha autenticado un usuario, las credenciales son inválidas
-    if (!req.user) return res.status(400).send("Credenciales inválidas");
+    if (!req.user) {
+      return res.status(400).send("Credenciales inválidas");
+    }
 
     try {
+      // Crear un nuevo carrito
+      const cartUser = await cartManager.createCart();
+
+      // Guardar el cartId en el usuario
+      req.user.cart = cartUser._id;
+      await req.user.save();
+
       // Crear sesión de usuario
       req.session.user = {
         first_name: req.user.first_name,
@@ -63,7 +32,7 @@ router.post(
         age: req.user.age,
         email: req.user.email,
         role: req.user.role,
-        cart: req.user.cart,
+        cart: cartUser._id,
       };
       req.session.login = true;
 
@@ -76,26 +45,28 @@ router.post(
   }
 );
 
-router.get("/current", (req, res) =>{
-  if(!req.user) {
+// Ruta para obtener el usuario actual
+router.get("/current", (req, res) => {
+  if (!req.user) {
     return res.status(400).send("Credenciales inválidas");
   }
   try {
-    const curretUser = {
+    const currentUser = {
       first_name: req.user.first_name,
       last_name: req.user.last_name,
       age: req.user.age,
       email: req.user.email,
       role: req.user.role,
       cart: req.user.cart,
-    }
-    res.json(curretUser)
-    
+    };
+    res.json(currentUser);
   } catch (error) {
-    res.status(400).send("error al mostrar usuario");
+    console.error("Error al mostrar usuario:", error);
+    res.status(500).send("Error al mostrar usuario");
   }
-})
+});
 
+// Ruta para manejar el fallo en el registro
 router.get("/failedRegister", (req, res) => {
   res.send("Registro fallido");
 });
