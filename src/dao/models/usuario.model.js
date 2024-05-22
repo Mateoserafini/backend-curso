@@ -23,10 +23,13 @@ const schema = new mongoose.Schema({
     type: Number,
     require: true,
   },
-  role: {
-    type: Boolean,
-    default: false,
-  },
+  role: { 
+    type: String, enum: ["admin", "user"], default: "user"
+   },
+  cart: [{ 
+    type: mongoose.Schema.Types.ObjectId,
+      ref: "Cart", 
+  }],
 });
 
 const UsuarioModel = mongoose.model("usuario", schema);

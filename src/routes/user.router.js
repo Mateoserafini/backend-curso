@@ -61,6 +61,8 @@ router.post(
         last_name: req.user.last_name,
         age: req.user.age,
         email: req.user.email,
+        role: req.user.role,
+        cart: req.user.cart,
       };
       req.session.login = true;
 
