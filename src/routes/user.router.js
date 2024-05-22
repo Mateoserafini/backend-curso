@@ -4,6 +4,7 @@ import UsuarioModel from "../dao/models/usuario.model.js";
 import bcrypt from "bcryptjs";
 const ADMIN = "matuserafini@gmail.com";
 import passport from "passport";
+import { get } from "mongoose";
 
 /* mongo db version
 router.post("/", async (req, res) => {
@@ -74,6 +75,26 @@ router.post(
     }
   }
 );
+
+router.get("/current", (req, res) =>{
+  if(!req.user) {
+    return res.status(400).send("Credenciales inválidas");
+  }
+  try {
+    const curretUser = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      email: req.user.email,
+      role: req.user.role,
+      cart: req.user.cart,
+    }
+    res.json(curretUser)
+    
+  } catch (error) {
+    res.status(400).send("error al mostrar usuario");
+  }
+})
 
 router.get("/failedRegister", (req, res) => {
   res.send("Registro fallido");
