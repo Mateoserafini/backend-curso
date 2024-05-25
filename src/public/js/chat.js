@@ -1,12 +1,11 @@
-const socketClient = io(); // Establece una conexión con el servidor mediante Socket.io
-const nombreUsuario = document.getElementById("nombreusuario"); // Obtiene el elemento para mostrar el nombre del usuario
-const formulario = document.getElementById("formulario"); // Obtiene el formulario de mensajes
-const inputMensaje = document.getElementById("mensaje"); // Obtiene el campo de entrada de mensajes
-const chat = document.getElementById("chat"); // Obtiene el elemento del chat
+const socketClient = io();
+const nombreUsuario = document.getElementById("nombreusuario");
+const formulario = document.getElementById("formulario");
+const inputMensaje = document.getElementById("mensaje");
+const chat = document.getElementById("chat");
 
-let usuario = null; // Variable para almacenar el nombre del usuario
+let usuario = null;
 
-// Si el usuario no está definido, muestra un cuadro de diálogo para ingresar su nombre
 if (!usuario) {
   Swal.fire({
     title: "Bienvenido al chat",
@@ -17,62 +16,52 @@ if (!usuario) {
     },
     allowOutsideClick: false,
   }).then((username) => {
-    usuario = username.value; // Guarda el nombre del usuario ingresado
-    nombreUsuario.innerHTML = usuario; // Muestra el nombre del usuario en el elemento correspondiente
-    socketClient.emit("nuevoUsuario", usuario); // Envía un evento al servidor con el nuevo usuario
+    usuario = username.value;
+    nombreUsuario.innerHTML = usuario;
+    socketClient.emit("nuevoUsuario", usuario);
   });
 }
 
-// Función para desplazar automáticamente la vista del chat hacia abajo
 function scrollToBottom() {
-  const chatContainer = document.getElementById("chat-messages"); // Obtiene el contenedor de mensajes del chat
-  chatContainer.scrollTop = chatContainer.scrollHeight; // Desplaza hacia abajo
+  const chatContainer = document.getElementById("chat-messages");
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
-// Maneja el envío del formulario de mensajes
 formulario.onsubmit = (e) => {
-  e.preventDefault(); // Evita que el formulario se envíe de forma predeterminada
+  e.preventDefault();
   const info = {
-    user: usuario, // Nombre del usuario que envía el mensaje
-    message: inputMensaje.value, // Mensaje ingresado
+    user: usuario,
+    message: inputMensaje.value,
   };
-  console.log(info); // Muestra la información en la consola
-  socketClient.emit("mensaje", info); // Envía el mensaje al servidor
-  inputMensaje.value = ""; // Limpia el campo de entrada de mensajes
-  scrollToBottom(); // Desplaza automáticamente hacia abajo
+  socketClient.emit("mensaje", info);
+  inputMensaje.value = "";
+  scrollToBottom();
 };
 
-// Maneja los mensajes recibidos del servidor
 socketClient.on("chat", (mensajes) => {
-  // Renderiza los mensajes en el chat
   const chatRender = mensajes
     .map((mensaje) => {
-      const fechaCreacion = new Date(mensaje.createdAt); // Obtiene la fecha de creación del mensaje
-      const opcionesHora = { hour: "2-digit", minute: "2-digit" }; // Opciones de formato de hora
-      const horaFormateada = fechaCreacion.toLocaleTimeString(
-        undefined,
-        opcionesHora
-      ); // Formatea la hora
-      return `<p><strong>${horaFormateada}</strong> - <strong>${mensaje.user}</strong>: ${mensaje.message}</p>`; // Formatea el mensaje para el chat
+      const fechaCreacion = new Date(mensaje.createdAt);
+      const opcionesHora = { hour: "2-digit", minute: "2-digit" };
+      const horaFormateada = fechaCreacion.toLocaleTimeString(undefined, opcionesHora);
+      return `<p><strong>${horaFormateada}</strong> - <strong>${mensaje.user}</strong>: ${mensaje.message}</p>`;
     })
-    .join(""); // Une los mensajes formateados en una cadena
-  chat.innerHTML = chatRender; // Actualiza el contenido del chat
+    .join("");
+  chat.innerHTML = chatRender;
 });
 
-// Maneja el evento de ingreso de un nuevo usuario al chat
 socketClient.on("broadcast", (usuario) => {
   Toastify({
-    text: `Ingreso ${usuario} al chat`, // Mensaje de ingreso de usuario
-    duration: 5000, // Duración de la notificación en milisegundos
-    position: "right", // Posición de la notificación
+    text: `Ingreso ${usuario} al chat`,
+    duration: 5000,
+    position: "right",
     style: {
-      background: "linear-gradient(to right, #00b09b, #96c93d)", // Estilo de fondo de la notificación
+      background: "linear-gradient(to right, #00b09b, #96c93d)",
     },
-  }).showToast(); // Muestra la notificación
+  }).showToast();
 });
 
-// Maneja el evento de limpiar el chat
 document.getElementById("clearChat").addEventListener("click", () => {
-  document.getElementById("chat").textContent = ""; // Limpia el contenido del chat
-  socketClient.emit("clearchat"); // Envía un evento para limpiar el chat
+  chat.textContent = "";
+  socketClient.emit("clearchat");
 });
