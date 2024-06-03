@@ -4,8 +4,8 @@ class CartController {
   async createCart(req, res) {
     try {
       const nuevoCarrito = await cartModel.create({ products: [] });
-      console.log("carrito enviado:", nuevoCarrito); // Asegúrate de que 'nuevoCarrito' se está imprimiendo correctamente
-      return nuevoCarrito; // Devuelve el objeto del carrito creado
+      console.log("carrito enviado:", nuevoCarrito); 
+      return nuevoCarrito; 
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Error interno del servidor" });
@@ -36,7 +36,6 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      // Agregar lógica para agregar el producto al carrito
       carrito.products.push({ product: productId, quantity });
       await carrito.save();
 
@@ -57,7 +56,6 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      // Eliminar el producto del carrito
       carrito.products = carrito.products.filter(product => product.product.toString() !== productId);
       await carrito.save();
 

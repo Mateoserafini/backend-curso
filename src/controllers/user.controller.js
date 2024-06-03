@@ -118,7 +118,7 @@ class UserController {
       res.redirect("/profile");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
-      next(error); // Pasar el error al siguiente middleware
+      next(error); 
     }
   }
 }
