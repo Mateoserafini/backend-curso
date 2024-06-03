@@ -10,7 +10,7 @@ import cartRouter from "./routes/cart.router.js";
 import socketProducts from "./sockets/realtimeproducts.socket.js";
 import socketChat from "./sockets/chat.socket.js";
 import userRouter from "./routes/user.router.js";
-import sessionsRouter from "./routes/session.router.js";
+import sessionsRouter from "./routes/user.router.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
