@@ -1,6 +1,6 @@
-import { productsModel } from "../../models/products.model.js";
+import { productsModel } from "../models/products.model.js";
 
-export default class ProductManager {
+export default class ProductController {
   getProducts = async (queryParams) => {
     try {
       const { limit = 10, page = 1, sort, query } = queryParams;

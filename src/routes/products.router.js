@@ -1,12 +1,12 @@
 import { Router } from "express";
-import ProductManager from "../dao/controllers/Mongo/productManagerMongo.js";
+import ProductController from "../controllers/product.controller.js";
 
-const prodM = new ProductManager();
-const routerP = Router();
+const productController = new ProductController();
+const router = Router();
 
-routerP.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    const productsData = await prodM.getProducts(req.query);
+    const productsData = await productController.getProducts(req.query);
     res.json(productsData);
   } catch (error) {
     console.error(error);
@@ -14,11 +14,11 @@ routerP.get("/", async (req, res) => {
   }
 });
 
-routerP.get("/:pid", async (req, res) => {
+router.get("/:pid", async (req, res) => {
   const id = req.params.pid;
 
   try {
-    const producto = await prodM.getProductById(id);
+    const producto = await productController.getProductById(id);
     if (!producto) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
@@ -29,9 +29,9 @@ routerP.get("/:pid", async (req, res) => {
   }
 });
 
-routerP.post("/", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const nuevoProducto = await prodM.addProduct(req.body);
+    const nuevoProducto = await productController.addProduct(req.body);
     res.json({ status: "success", nuevoProducto });
   } catch (error) {
     console.error(error);
@@ -39,12 +39,12 @@ routerP.post("/", async (req, res) => {
   }
 });
 
-routerP.put("/:pid", async (req, res) => {
+router.put("/:pid", async (req, res) => {
   const id = req.params.pid;
   const productoActualizado = req.body;
 
   try {
-    await prodM.updateProduct(id, productoActualizado);
+    await productController.updateProduct(id, productoActualizado);
     res.json({ message: "Producto actualizado exitosamente" });
   } catch (error) {
     console.error("Error al actualizar producto", error);
@@ -52,11 +52,11 @@ routerP.put("/:pid", async (req, res) => {
   }
 });
 
-routerP.delete("/:pid", async (req, res) => {
+router.delete("/:pid", async (req, res) => {
   const id = req.params.pid;
 
   try {
-    await prodM.deleteProduct(id);
+    await productController.deleteProduct(id);
     res.json({ message: "Producto eliminado exitosamente" });
   } catch (error) {
     console.error("Error al eliminar producto", error);
@@ -64,4 +64,4 @@ routerP.delete("/:pid", async (req, res) => {
   }
 });
 
-export default routerP;
+export default router;

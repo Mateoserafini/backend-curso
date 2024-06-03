@@ -1,6 +1,6 @@
-import MessageManager from "../dao/controllers/Mongo/messageManagerMongo.js";
+import MessageController from "../controllers/message.controller.js";
 
-const message = new MessageManager();
+const message = new MessageController();
 
 const socketChat = (socketServer) => {
   socketServer.on("connection", async (socket) => {

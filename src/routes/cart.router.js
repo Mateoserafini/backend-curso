@@ -1,12 +1,12 @@
 import { Router } from "express";
-import CartManager from "../dao/controllers/Mongo/cartManager.js";
+import CartController from "../controllers/cart.controller.js";
 
-const cartM = new CartManager();
+const cartController = new CartController();
 const router = Router();
 
 router.post("/", async (req, res) => {
   try {
-    const nuevoCarrito = await cartM.createCart();
+    const nuevoCarrito = await cartController.createCart();
     res.json(nuevoCarrito);
   } catch (error) {
     console.error(error);
@@ -17,7 +17,7 @@ router.post("/", async (req, res) => {
 router.get("/:cid", async (req, res) => {
   const cartId = req.params.cid;
   try {
-    const carrito = await cartM.getCartById(cartId);
+    const carrito = await cartController.getCartById(cartId);
     res.json(carrito.products);
   } catch (error) {
     console.error(error);
@@ -31,7 +31,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
   const { quantity } = req.body;
 
   try {
-    const carritoActualizado = await cartM.addProductToCart(cartId, productId, quantity);
+    const carritoActualizado = await cartController.addProductToCart(cartId, productId, quantity);
     res.json(carritoActualizado.products);
   } catch (error) {
     console.error(error);
@@ -44,7 +44,7 @@ router.delete("/:cid/products/:pid", async (req, res) => {
   const productId = req.params.pid;
 
   try {
-    const carritoActualizado = await cartM.deleteProductFromCart(cartId, productId);
+    const carritoActualizado = await cartController.deleteProductFromCart(cartId, productId);
     if (!carritoActualizado) {
       return res.status(404).json({ error: "No se encontró el carrito o el producto" });
     }
@@ -60,7 +60,7 @@ router.put("/:cid", async (req, res) => {
   const { products } = req.body;
 
   try {
-    const carritoActualizado = await cartM.updateCart(cartId, products);
+    const carritoActualizado = await cartController.updateCart(cartId, products);
     res.json(carritoActualizado.products);
   } catch (error) {
     console.error(error);
@@ -74,7 +74,7 @@ router.put("/:cid/products/:pid", async (req, res) => {
   const { quantity } = req.body;
 
   try {
-    const carritoActualizado = await cartM.updateProductQuantity(cartId, productId, quantity);
+    const carritoActualizado = await cartController.updateProductQuantity(cartId, productId, quantity);
     res.json(carritoActualizado.products);
   } catch (error) {
     console.error(error);
@@ -86,7 +86,7 @@ router.delete("/:cid", async (req, res) => {
   const cartId = req.params.cid;
 
   try {
-    const carritoActualizado = await cartM.deleteAllProductsFromCart(cartId);
+    const carritoActualizado = await cartController.deleteAllProductsFromCart(cartId);
     res.json(carritoActualizado.products);
   } catch (error) {
     console.error(error);

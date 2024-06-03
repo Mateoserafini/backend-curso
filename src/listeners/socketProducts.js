@@ -1,22 +1,22 @@
-import ProductManager from "../dao/controllers/Mongo/productManagerMongo.js";
+import ProductController from "../controllers/product.controller.js";
 import { __dirname } from "../utils.js";
 
-const prodM = new ProductManager();
+const productController = new ProductController();
 
 const socketProducts = (socketServer) => {
   socketServer.on("connection", async (socket) => {
-    const listaDeProductos = await prodM.getProductsView();
+    const listaDeProductos = await productController.getProductsView();
     socketServer.emit("enviodeproducts", listaDeProductos);
 
     socket.on("addProduct", async (obj) => {
-      await prodM.addProduct(obj);
-      const listaDeProductos = await prodM.getProductsView();
+      await productController.addProduct(obj);
+      const listaDeProductos = await productController.getProductsView();
       socketServer.emit("enviodeproducts", listaDeProductos);
     });
 
     socket.on("deleteProduct", async (id) => {
-      await prodM.deleteProduct(id);
-      const listaDeProductos = await prodM.getProductsView();
+      await productController.deleteProduct(id);
+      const listaDeProductos = await productController.getProductsView();
       socketServer.emit("enviodeproducts", listaDeProductos);
     });
   });

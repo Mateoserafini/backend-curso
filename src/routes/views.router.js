@@ -1,10 +1,10 @@
 import { Router } from "express";
-import ProductManager from "../dao/controllers/Mongo/productManagerMongo.js";
+import ProductController from "../controllers/product.controller.js";
 import { __dirname } from "../utils.js";
-import { productsModel } from "../dao/models/products.model.js";
-import { cartModel } from "../dao/models/cart.model.js";
+import { productsModel } from "../models/products.model.js";
+import { cartModel } from "../models/cart.model.js";
 
-const prodM = new ProductManager();
+const productController = new ProductController();
 const router = Router();
 
 router.get("/", async (req, res) => {
@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
 
   try {
     const user = req.session.user.first_name;
-    const listadeproductos = await prodM.getProductsView();
+    const listadeproductos = await productController.getProductsView();
     res.render("home", { listadeproductos, user });
   } catch (error) {
     console.error(error);

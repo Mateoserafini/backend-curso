@@ -1,9 +1,9 @@
 import express from "express";
 import passport from "passport";
-import CartManager from "../dao/controllers/Mongo/cartManager.js";
+import CartController from "../controllers/cart.controller.js";
 
 const router = express.Router();
-const cartManager = new CartManager();
+const cartController = new CartController();
 
 router.post(
   "/login",
@@ -67,7 +67,7 @@ router.get(
     try {
       const userWithCart = req.user;
       if (!userWithCart.cart) {
-        const newCart = await cartManager.createCart();
+        const newCart = await cartController.createCart();
         userWithCart.cart = newCart._id;
         await userWithCart.save();
       }

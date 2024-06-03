@@ -1,6 +1,6 @@
 const socketClient = io();
 
-socketClient.on("envioDeProductos", (obj) => {
+socketClient.on("enviodeproducts", (obj) => {
   renderizarListaDeProductos(obj);
 });
 
@@ -49,7 +49,7 @@ form.addEventListener("submit", (evt) => {
   const code = form.elements.code.value;
   const status = form.elements.status.checked;
 
-  socketClient.emit("agregarProducto", {
+  socketClient.emit("addProduct", {
     title,
     description,
     stock,
@@ -66,10 +66,10 @@ form.addEventListener("submit", (evt) => {
 document.getElementById("delete-btn").addEventListener("click", () => {
   const deleteIdInput = document.getElementById("id-prod");
   const deleteId = deleteIdInput.value;
-  socketClient.emit("eliminarProducto", deleteId);
+  socketClient.emit("deleteProduct", deleteId);
   deleteIdInput.value = "";
 });
 
 function eliminarProducto(productId) {
-  socketClient.emit("eliminarProducto", productId);
+  socketClient.emit("deleteProduct", productId);
 }
