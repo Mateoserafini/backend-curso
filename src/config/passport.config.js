@@ -18,14 +18,12 @@ const initializePassport = () => {
         const { first_name, last_name, email, age } = req.body;
 
         try {
-          //Verificamos si ya existe un registro con ese email:
           let usuario = await UsuarioModel.findOne({ email });
 
           if (usuario) {
             return done(null, false);
           }
           const passwordHash = await bcrypt.hash(password, 10);
-          //Si no existe voy a crear un registro de usuario nuevo:
 
           let nuevoUsuario = {
             first_name,
@@ -37,7 +35,7 @@ const initializePassport = () => {
 
           let resultado = await UsuarioModel.create(nuevoUsuario);
           return done(null, resultado);
-          //Si todo resulta bien, podemos mandar done con el usuario generado.
+
         } catch (error) {
           return done(error);
         }
@@ -45,7 +43,6 @@ const initializePassport = () => {
     )
   );
 
-  //Agregamos otra estrategia para el "Login".
   passport.use(
     "login",
     new LocalStrategy(
@@ -74,7 +71,7 @@ const initializePassport = () => {
     )
   );
 
-  //Serializar y deserializar:
+
 
   passport.serializeUser((user, done) => {
     done(null, user._id);

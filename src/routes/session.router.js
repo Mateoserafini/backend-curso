@@ -63,11 +63,11 @@ router.get(
   passport.authenticate("github", {
     failureRedirect: "/login",
   }),
-  async (req, res) => {
+  async (req, res, next) => {
     try {
       const userWithCart = req.user;
       if (!userWithCart.cart) {
-        const newCart = await cartController.createCart();
+        const newCart = await cartController.createCart(req, res);
         userWithCart.cart = newCart._id;
         await userWithCart.save();
       }
@@ -85,8 +85,13 @@ router.get(
       res.redirect("/profile");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
-      res.status(500).send("Error en el inicio de sesión");
+      next(error); // Pasar el error al siguiente middleware
     }
+  },
+  (err, req, res, next) => {
+    // Manejar errores aquí
+    console.error(err);
+    res.status(500).send("Error en el inicio de sesión");
   }
 );
 
