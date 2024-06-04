@@ -174,4 +174,10 @@ Para inicializar el proyecto, sigue estos pasos:
     ```bash
     npm run dev
     ```
+    
+4. Para iniciar el proyecto en modo producción:
+
+    ```bash
+    npm start
+    ```
 
