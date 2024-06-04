@@ -152,4 +152,13 @@ A continuación, se presenta un ejemplo de los productos disponibles para las pr
   "prevLink": null,
   "nextLink": null
 }
+## Inicialización del Proyecto
+
+Para inicializar el proyecto, sigue estos pasos:
+
+1. Cambia al directorio del backend:
+
+    ```bash
+    cd backend
+    ```
 
