@@ -1,8 +1,13 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export const respuesta = (res, status, message) =>{
-    res.status(status).json({message});
-}
+
+import { Command } from "commander";
+const program = new Command(); 
+
+program 
+    .option("--mode <mode>", "modo de trabajo", "produccion");
+program.parse();
+
+export default program; 

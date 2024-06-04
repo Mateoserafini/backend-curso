@@ -14,10 +14,10 @@ import sessionsRouter from "./routes/user.router.js";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-import initializePassport from "./config/passport.config.js";
+import initializePassport from "./libs/passport.js";
+import configObject from "./config/config.js";
 
 const app = express();
-const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,12 +29,12 @@ app.set("view engine", "handlebars");
 
 app.use(
   session({
-    secret: "12345678",
+    secret: configObject.secret,
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({
-      mongoUrl: "mongodb+srv://matuserafini:45089673@cluster0.frnygq1.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0",
-      ttl: 15,
+      mongoUrl: configObject.mongoURL,
+      ttl: 3600,//1 hora
     }),
   })
 );
@@ -49,9 +49,11 @@ app.use("/api/products", routerProduct);
 app.use("/api/carts", cartRouter);
 app.use("/", routerViews);
 
-const httpServer = app.listen(PORT, () => {
-  console.log(`Escuchando en http://localhost:${PORT}`);
+const httpServer = app.listen(configObject.PORT, () => {
+  console.log(`Escuchando en http://localhost:${configObject.PORT}`);
 });
+
+console.log(configObject.estado)
 
 const socketServer = new Server(httpServer);
 

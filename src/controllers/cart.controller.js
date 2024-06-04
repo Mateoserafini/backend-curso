@@ -93,7 +93,6 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      // Actualizar la cantidad del producto en el carrito
       const productToUpdate = carrito.products.find(product => product.product.toString() === productId);
       if (productToUpdate) {
         productToUpdate.quantity = quantity;
