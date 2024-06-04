@@ -152,6 +152,8 @@ A continuación, se presenta un ejemplo de los productos disponibles para las pr
   "prevLink": null,
   "nextLink": null
 }
+```
+
 ## Inicialización del Proyecto
 
 Para inicializar el proyecto, sigue estos pasos:
@@ -160,5 +162,16 @@ Para inicializar el proyecto, sigue estos pasos:
 
     ```bash
     cd backend
+    ```
+2. Instala las dependencias necesarias:
+
+    ```bash
+    npm install
+    ```
+
+3. Para iniciar el proyecto en modo desarrollo:
+
+    ```bash
+    npm run dev
     ```
 
