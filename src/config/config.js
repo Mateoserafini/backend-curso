@@ -15,7 +15,8 @@ const configObject = {
     clientSecret:process.env.CLIENTSECRET,
     callbackURL:process.env.CALLBACKURL,
     secret : process.env.SECRETMONGO,
-    admin: process.env.ADMIN,
+    admin01: process.env.ADMIN01,
+    admin02:  process.env.ADMIN02,
     estado : process.env.estado
 };
 

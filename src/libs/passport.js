@@ -105,7 +105,7 @@ passport.use(
         });
 
         if (!usuario) {
-          const role = (profile._json.email === "admin@admin.com" || profile._json.email === "matuserafini@gmail.com") ? 'admin' : 'user';
+          const role = (profile._json.email === configObject.admin01 || profile._json.email === configObject.admin02) ? 'admin' : 'user';
 
           let nuevoUsuario = {
             first_name: profile._json.name,

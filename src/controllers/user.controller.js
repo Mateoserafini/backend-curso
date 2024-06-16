@@ -19,7 +19,9 @@ class UserController {
 
     try {
       const cartUser = await cartController.createCart();
+      console.log("cart desde user:" + cartUser)
       req.user.cart = cartUser._id;
+      console.log(req.user)
       await req.user.save();
 
       req.session.user = createUserDTO(req.user);

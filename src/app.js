@@ -7,6 +7,7 @@ import "dotenv/config";
 import routerProduct from "./routes/products.router.js";
 import routerViews from "./routes/views.router.js";
 import cartRouter from "./routes/cart.router.js";
+import ticketRoutes from './routes/ticket.router.js';
 import socketProducts from "./sockets/realtimeproducts.socket.js";
 import socketChat from "./sockets/chat.socket.js";
 import userRouter from "./routes/user.router.js";
@@ -47,6 +48,7 @@ app.use("/api/users", userRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/products", routerProduct);
 app.use("/api/carts", cartRouter);
+app.use('/api/tickets', ticketRoutes);
 app.use("/", routerViews);
 
 const httpServer = app.listen(configObject.PORT, () => {
