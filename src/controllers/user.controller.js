@@ -2,6 +2,15 @@ import CartController from "../controllers/cart.controller.js";
 
 const cartController = new CartController();
 
+function createUserDTO(user) {
+  return {
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+    role: user.role,
+  };
+}
+
 class UserController {
   async register(req, res) {
     if (!req.user) {
@@ -13,14 +22,7 @@ class UserController {
       req.user.cart = cartUser._id;
       await req.user.save();
 
-      req.session.user = {
-        first_name: req.user.first_name,
-        last_name: req.user.last_name,
-        age: req.user.age,
-        email: req.user.email,
-        role: req.user.role,
-        cart: cartUser._id,
-      };
+      req.session.user = createUserDTO(req.user);
       req.session.login = true;
 
       res.redirect("/profile");
@@ -35,14 +37,7 @@ class UserController {
       return res.status(400).send("Credenciales inválidas");
     }
     try {
-      const currentUser = {
-        first_name: req.user.first_name,
-        last_name: req.user.last_name,
-        age: req.user.age,
-        email: req.user.email,
-        role: req.user.role,
-        cart: req.user.cart,
-      };
+      const currentUser = createUserDTO(req.user);
       res.json(currentUser);
     } catch (error) {
       console.error("Error al mostrar usuario:", error);
@@ -60,15 +55,7 @@ class UserController {
         return res.status(400).send("Credenciales inválidas");
       }
 
-      req.session.user = {
-        first_name: req.user.first_name,
-        last_name: req.user.last_name,
-        age: req.user.age,
-        email: req.user.email,
-        role: req.user.role,
-        cart: req.user.cart,
-      };
-
+      req.session.user = createUserDTO(req.user);
       req.session.login = true;
       res.redirect("/profile");
     } catch (error) {
@@ -105,15 +92,7 @@ class UserController {
         await userWithCart.save();
       }
 
-      req.session.user = {
-        first_name: userWithCart.first_name,
-        last_name: userWithCart.last_name,
-        age: userWithCart.age,
-        email: userWithCart.email,
-        role: userWithCart.role,
-        cart: userWithCart.cart,
-      };
-
+      req.session.user = createUserDTO(userWithCart);
       req.session.login = true;
       res.redirect("/profile");
     } catch (error) {

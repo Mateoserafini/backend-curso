@@ -17,26 +17,30 @@ const initializePassport = () => {
       },
       async (req, username, password, done) => {
         const { first_name, last_name, email, age } = req.body;
-
+  
         try {
           let usuario = await UsuarioModel.findOne({ email });
-
+  
           if (usuario) {
-            return done(null, false);
+            return done(null, false, { message: "Usuario ya registrado" });
           }
+          
           const passwordHash = await bcrypt.hash(password, 10);
-
+          
+          const role = (email === "admin@admin.com" || email === "matuserafini@gmail.com") ? 'admin' : 'user';
+  
           let nuevoUsuario = {
             first_name,
             last_name,
             email,
             age,
             password: passwordHash,
+            role: role,
           };
-
+  
           let resultado = await UsuarioModel.create(nuevoUsuario);
           return done(null, resultado);
-
+  
         } catch (error) {
           return done(error);
         }
@@ -101,12 +105,15 @@ passport.use(
         });
 
         if (!usuario) {
+          const role = (profile._json.email === "admin@admin.com" || profile._json.email === "matuserafini@gmail.com") ? 'admin' : 'user';
+
           let nuevoUsuario = {
             first_name: profile._json.name,
             last_name: "",
             age: 36,
             email: profile._json.email,
-            password: "messi",
+            password: "messi", // Contraseña por defecto
+            role: role,
           };
 
           let resultado = await UsuarioModel.create(nuevoUsuario);
