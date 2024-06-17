@@ -4,7 +4,7 @@ const message = new MessageController();
 
 const socketChat = (socketServer) => {
   socketServer.on("connection", async (socket) => {
-    console.log("Usuario conectado con ID: " + socket.id); // Muestra el ID del usuario conectado
+    console.log("Usuario conectado con ID: " + socket.id);
 
     socket.on("mensaje", async (info) => {
       await message.createMessage(info);

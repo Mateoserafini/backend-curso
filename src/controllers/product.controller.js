@@ -51,8 +51,8 @@ export default class ProductController {
           : null,
       };
     } catch (error) {
-      console.log("Error al obtener productos", error);
-      throw error;
+      console.error("Error al obtener productos:", error);
+      throw new Error("Error al obtener productos.");
     }
   };
 
@@ -60,67 +60,70 @@ export default class ProductController {
     try {
       return await productsModel.find().lean();
     } catch (error) {
-      console.log("Error al obtener productos en formato lean", error);
-      throw error;
+      console.error("Error al obtener productos en formato lean:", error);
+      throw new Error("Error al obtener productos en formato lean.");
     }
   };
 
-  async getProductById(id) {
+  getProductById = async (id) => {
     try {
       const producto = await productsModel.findById(id);
       if (!producto) {
-        console.log("Producto no encontrado");
+        console.error(`Producto con ID ${id} no encontrado`);
         return null;
       }
-      console.log("Producto encontrado");
       return producto;
     } catch (error) {
-      console.log("Error al encontrar producto por ID", error);
-      throw error;
-    }
-  }
-
-  addProduct = async (product) => {
-    try {
-      await productsModel.create(product);
-      return await productsModel.findOne({ title: product.title });
-    } catch (error) {
-      console.log("Error al crear un producto", error);
-      throw error;
+      console.error(`Error al encontrar producto por ID ${id}:`, error);
+      throw new Error(`Error al encontrar producto con ID ${id}.`);
     }
   };
 
+  async addProduct(product) {
+    try {
+      const newProduct = await productsModel.create(product);
+      console.log("Producto creado:", newProduct);
+      return newProduct;
+    } catch (error) {
+      console.error("Error al crear un producto:", error);
+      throw new Error("Error al crear un producto.");
+    }
+  }
+
   async updateProduct(id, productoActualizado) {
     try {
+      console.log("Intentando actualizar producto con ID:", id);
+      console.log("Datos del producto actualizado:", productoActualizado);
       const updateProduct = await productsModel.findByIdAndUpdate(
         id,
         productoActualizado,
-        { new: true } 
+        { new: true }  // Devuelve el producto actualizado
       );
       if (!updateProduct) {
-        console.log("Producto no encontrado");
+        console.error(`Producto con ID ${id} no encontrado`);
         return null;
       }
-      console.log("Producto actualizado");
+      console.log("Producto actualizado:", updateProduct);
       return updateProduct;
     } catch (error) {
-      console.log("Error al actualizar producto por ID", error);
-      throw error;
+      console.error(`Error al actualizar producto con ID ${id}:`, error);
+      throw new Error(`Error al actualizar producto con ID ${id}.`);
     }
   }
 
   async deleteProduct(id) {
     try {
+      console.log("Intentando eliminar producto con ID:", id);
       const deleteProduct = await productsModel.findByIdAndDelete(id);
-
       if (!deleteProduct) {
-        console.log("Producto no encontrado");
+        console.error(`Producto con ID ${id} no encontrado`);
         return null;
       }
-      console.log("Producto eliminado");
+      console.log(`Producto con ID ${id} eliminado`);
+      return deleteProduct;
     } catch (error) {
-      console.log("Error al eliminar producto por ID", error);
-      throw error;
+      console.error(`Error al eliminar producto con ID ${id}:`, error);
+      throw new Error(`Error al eliminar producto con ID ${id}.`);
     }
   }
 }

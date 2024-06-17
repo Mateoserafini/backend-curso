@@ -19,9 +19,9 @@ class UserController {
 
     try {
       const cartUser = await cartController.createCart();
-      console.log("cart desde user:" + cartUser)
+      console.log("cart desde user:" + cartUser);
       req.user.cart = cartUser._id;
-      console.log(req.user)
+      console.log(req.user);
       await req.user.save();
 
       req.session.user = createUserDTO(req.user);
@@ -99,7 +99,7 @@ class UserController {
       res.redirect("/profile");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
-      next(error); 
+      next(error);
     }
   }
 }
