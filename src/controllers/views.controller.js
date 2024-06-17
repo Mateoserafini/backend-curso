@@ -50,6 +50,10 @@ class ViewsController {
       if (!req.session.login) {
         return res.redirect("/login");
       }
+
+      const cartId = req.user.cart.toString();
+      console.log(cartId)
+
       let { page = 1, limit = 10 } = req.query;
       page = parseInt(page, 10);
       limit = parseInt(limit, 10);
@@ -59,7 +63,9 @@ class ViewsController {
         lean: true,
         leanWithId: false,
       };
+
       const result = await productsModel.paginate({}, options);
+
       res.render("products", {
         user: req.session.user.first_name,
         products: result.docs,
@@ -70,6 +76,7 @@ class ViewsController {
         prevPage: result.prevPage,
         nextPage: result.nextPage,
         limit: result.limit,
+        cartId
       });
     } catch (error) {
       console.error(error);

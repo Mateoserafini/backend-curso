@@ -33,19 +33,29 @@ class CartController {
     const { quantity } = req.body;
 
     try {
+      // Asegurarse de que quantity es un número
+      const parsedQuantity = parseInt(quantity, 10);
+      if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
+        return res.status(400).json({ error: 'Cantidad debe ser un número positivo.' });
+      }
+
       const carrito = await cartModel.findById(cartId);
       if (!carrito) {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
+      // Buscar el índice del producto en el carrito
       const productIndex = carrito.products.findIndex(item => item.product.toString() === productId);
+      
       if (productIndex !== -1) {
-        carrito.products[productIndex].quantity += quantity;
+        // Si el producto ya está en el carrito, sumamos la cantidad
+        carrito.products[productIndex].quantity += parsedQuantity;
       } else {
-        carrito.products.push({ product: productId, quantity });
+        // Si el producto no está en el carrito, lo agregamos
+        carrito.products.push({ product: productId, quantity: parsedQuantity });
       }
+      
       await carrito.save();
-
       res.json(carrito);
     } catch (error) {
       console.error(error);
