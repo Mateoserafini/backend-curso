@@ -1,30 +1,85 @@
-<!-- Título principal de la página -->
 <h1>Carrito de Compras</h1>
 
-<!-- Inicia un bloque para iterar sobre cada producto en el carrito -->
 {{#each products}}
-  <div class="product">
-    <!-- Muestra el nombre del producto -->
+  <div class="product" data-product-id="{{this.product._id}}">
     <h2>{{this.product.title}}</h2>
-    <!-- Muestra la cantidad de unidades del producto en el carrito -->
     <p>Cantidad: {{this.quantity}}</p>
-    <!-- Muestra el precio por unidad del producto -->
     <p>Precio: ${{this.product.price}}</p>
-    <!-- Muestra el subtotal del producto (cantidad * precio) -->
     <p>Subtotal: ${{multiply this.quantity this.product.price}}</p>
+    <button class="delete-product" data-product-id="{{this.product._id}}">Eliminar del Carrito</button>
   </div>
 {{/each}}
 
-<!-- Sección para mostrar el total de la compra -->
-{{#if products.length}}
-  <div class="total">
-    <h3>Total de la Compra:</h3>
-    <p>${{calculateTotal products}}</p>
-  </div>
-  <!-- Formulario para finalizar la compra -->
-  <form action="/api/carts/{{cartId}}/purchase" method="POST">
+<div class="total" id="total-container" style="display: none;">
+  <h3>Total de la Compra:</h3>
+  <p id="total-amount">${{calculateTotal products}}</p>
+  <form action="/api/carts/{{cartId}}/purchase" method="POST" id="purchase-form">
     <button type="submit">Finalizar Compra</button>
   </form>
-{{else}}
-  <p>No hay productos en el carrito.</p>
-{{/if}}
+</div>
+
+<p id="empty-message" style="display: none;">No hay productos en el carrito.</p>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const cartId = '{{cartId}}';
+
+    const totalContainer = document.getElementById('total-container');
+    const totalAmountElement = document.getElementById('total-amount');
+    const purchaseForm = document.getElementById('purchase-form');
+    const emptyMessage = document.getElementById('empty-message');
+
+    document.querySelectorAll('.delete-product').forEach(button => {
+      button.addEventListener('click', function() {
+        const productId = this.dataset.productId;
+
+        fetch(`/api/carts/${cartId}/products/${productId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => {
+          if (response.ok) {
+            const productDiv = document.querySelector(`.product[data-product-id="${productId}"]`);
+            if (productDiv) {
+              productDiv.remove();
+              updateTotal();
+              checkEmptyCart();
+            }
+          } else {
+            console.error('Error al eliminar el producto');
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      });
+    });
+
+    function updateTotal() {
+      let total = 0;
+      document.querySelectorAll('.product').forEach(product => {
+        const quantity = parseInt(product.querySelector('p:nth-child(2)').textContent.split(': ')[1]);
+        const price = parseFloat(product.querySelector('p:nth-child(3)').textContent.split(': $')[1]);
+        total += quantity * price;
+      });
+
+      totalAmountElement.textContent = `$${total.toFixed(2)}`;
+    }
+
+    function checkEmptyCart() {
+      const hasProducts = document.querySelectorAll('.product').length > 0;
+
+      if (hasProducts) {
+        totalContainer.style.display = 'block';
+        purchaseForm.style.display = 'block';
+        emptyMessage.style.display = 'none';
+      } else {
+        totalContainer.style.display = 'none';
+        purchaseForm.style.display = 'none';
+        emptyMessage.style.display = 'block';
+      }
+    }
+    updateTotal();
+    checkEmptyCart();
+  });
+</script>

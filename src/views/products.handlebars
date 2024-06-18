@@ -1,5 +1,8 @@
 <h1>PRODUCTOS</h1>
 
+
+<a href="/carts/{{cartId}}">Ir al Carrito</a>
+
 <div>
   {{#each products}}
     <div>
@@ -25,7 +28,6 @@
     <a href="?page={{nextPage}}&limit={{limit}}">Página Siguiente</a>
   {{/if}}
 </div>
-
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
