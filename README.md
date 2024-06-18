@@ -19,139 +19,208 @@
 A continuación, se presenta un ejemplo de los productos disponibles para las pruebas con Postman:
 
 ```json
-{
-  "status": "success",
-  "payload": [
+[
     {
-      "_id": "662433397029fcb5f751ad1b",
-      "title": "Camiseta Manga Corta",
-      "description": "Camiseta básica de manga corta en color blanco.",
-      "price": 15.99,
-      "img": "Sin img",
-      "code": "CAM-001",
-      "stock": 50,
-      "category": "Ropa",
-      "status": true,
-      "thumbnails": null
+      "title": "Camiseta Básica Blanca",
+      "description": "Camiseta de algodón blanca de manga corta",
+      "price": 10.99,
+      "stock": 100,
+      "thumbnail": "sin img",
+      "code": "CMB001",
+      "category": "Camisetas",
+      "status": true
     },
     {
-      "_id": "662433397029fcb5f751ad1c",
-      "title": "Pantalones Vaqueros",
-      "description": "Pantalones vaqueros de corte recto en color azul oscuro.",
+      "title": "Jeans Azul Clásico",
+      "description": "Jeans ajustados de mezclilla azul",
       "price": 29.99,
-      "img": "Sin img",
-      "code": "PAN-001",
-      "stock": 30,
-      "category": "Ropa",
-      "status": true,
-      "thumbnails": null
+      "stock": 50,
+      "thumbnail": "sin img",
+      "code": "JAC001",
+      "category": "Pantalones",
+      "status": true
     },
     {
-      "_id": "662433397029fcb5f751ad1d",
-      "title": "Zapatillas Deportivas",
-      "description": "Zapatillas deportivas blancas con detalles negros.",
-      "price": 49.99,
-      "img": "Sin img",
-      "code": "ZAP-001",
-      "stock": 20,
-      "category": "Calzado",
-      "status": true,
-      "thumbnails": null
-    },
-    {
-      "_id": "662433397029fcb5f751ad1e",
-      "title": "Sudadera con Capucha",
-      "description": "Sudadera con capucha en color gris.",
-      "price": 35.99,
-      "img": "Sin img",
-      "code": "SUD-001",
-      "stock": 40,
-      "category": "Ropa",
-      "status": true,
-      "thumbnails": null
-    },
-    {
-      "_id": "662433397029fcb5f751ad1f",
-      "title": "Bolso de Mano",
-      "description": "Bolso de mano en color marrón con detalles dorados.",
-      "price": 59.99,
-      "img": "Sin img",
-      "code": "BOL-001",
-      "stock": 15,
-      "category": "Accesorios",
-      "status": true,
-      "thumbnails": null
-    },
-    {
-      "_id": "662433397029fcb5f751ad20",
-      "title": "Gorra de Béisbol",
-      "description": "Gorra de béisbol en color negro.",
-      "price": 12.99,
-      "img": "Sin img",
-      "code": "GOR-001",
-      "stock": 25,
-      "category": "Accesorios",
-      "status": true,
-      "thumbnails": null
-    },
-    {
-      "_id": "662433397029fcb5f751ad21",
-      "title": "Reloj de Pulsera",
-      "description": "Reloj de pulsera con correa de cuero marrón.",
-      "price": 89.99,
-      "img": "Sin img",
-      "code": "REL-001",
-      "stock": 10,
-      "category": "Joyería",
-      "status": true,
-      "thumbnails": null
-    },
-    {
-      "_id": "662433397029fcb5f751ad22",
-      "title": "Cinturón de Cuero",
-      "description": "Cinturón de cuero en color negro.",
+      "title": "Sudadera con Capucha Negra",
+      "description": "Sudadera de algodón negra con capucha",
       "price": 24.99,
-      "img": "Sin img",
-      "code": "CIN-001",
-      "stock": 35,
-      "category": "Accesorios",
-      "status": true,
-      "thumbnails": null
+      "stock": 70,
+      "thumbnail": "sin img",
+      "code": "SCN001",
+      "category": "Sudaderas",
+      "status": true
     },
     {
-      "_id": "662433397029fcb5f751ad23",
-      "title": "Vestido Largo",
-      "description": "Vestido largo de verano con estampado floral.",
-      "price": 59.99,
-      "img": "Sin img",
-      "code": "VES-001",
-      "stock": 15,
-      "category": "Ropa",
-      "status": true,
-      "thumbnails": null
-    },
-    {
-      "_id": "662433397029fcb5f751ad24",
-      "title": "Sombrero de Paja",
-      "description": "Sombrero de paja con cinta negra.",
+      "title": "Polo Verde",
+      "description": "Camiseta polo verde de algodón",
       "price": 19.99,
-      "img": "Sin img",
-      "code": "SOM-001",
-      "stock": 10,
+      "stock": 80,
+      "thumbnail": "sin img",
+      "code": "PV001",
+      "category": "Polos",
+      "status": true
+    },
+    {
+      "title": "Chaqueta de Cuero",
+      "description": "Chaqueta de cuero genuino negro",
+      "price": 99.99,
+      "stock": 30,
+      "thumbnail": "sin img",
+      "code": "CC001",
+      "category": "Chaquetas",
+      "status": true
+    },
+    {
+      "title": "Vestido Rojo",
+      "description": "Vestido de fiesta rojo ajustado",
+      "price": 49.99,
+      "stock": 40,
+      "thumbnail": "sin img",
+      "code": "VR001",
+      "category": "Vestidos",
+      "status": true
+    },
+    {
+      "title": "Falda Negra",
+      "description": "Falda corta negra de lana",
+      "price": 25.99,
+      "stock": 60,
+      "thumbnail": "sin img",
+      "code": "FN001",
+      "category": "Faldas",
+      "status": true
+    },
+    {
+      "title": "Blusa Blanca",
+      "description": "Blusa de seda blanca con botones",
+      "price": 35.99,
+      "stock": 55,
+      "thumbnail": "sin img",
+      "code": "BB001",
+      "category": "Blusas",
+      "status": true
+    },
+    {
+      "title": "Pantalones Cortos",
+      "description": "Pantalones cortos de mezclilla azul",
+      "price": 15.99,
+      "stock": 90,
+      "thumbnail": "sin img",
+      "code": "PC001",
+      "category": "Pantalones",
+      "status": true
+    },
+    {
+      "title": "Zapatos Deportivos",
+      "description": "Zapatos deportivos blancos unisex",
+      "price": 59.99,
+      "stock": 40,
+      "thumbnail": "sin img",
+      "code": "ZD001",
+      "category": "Zapatos",
+      "status": true
+    },
+    {
+      "title": "Gorra Azul",
+      "description": "Gorra azul con visera curva",
+      "price": 12.99,
+      "stock": 120,
+      "thumbnail": "sin img",
+      "code": "GA001",
       "category": "Accesorios",
-      "status": true,
-      "thumbnails": null
+      "status": true
+    },
+    {
+      "title": "Cinturón de Cuero",
+      "description": "Cinturón de cuero marrón",
+      "price": 19.99,
+      "stock": 80,
+      "thumbnail": "sin img",
+      "code": "CCM001",
+      "category": "Accesorios",
+      "status": true
+    },
+    {
+      "title": "Bufanda de Lana",
+      "description": "Bufanda de lana gris",
+      "price": 14.99,
+      "stock": 70,
+      "thumbnail": "sin img",
+      "code": "BL001",
+      "category": "Accesorios",
+      "status": true
+    },
+    {
+      "title": "Calcetines Deportivos",
+      "description": "Calcetines deportivos blancos (paquete de 3)",
+      "price": 9.99,
+      "stock": 150,
+      "thumbnail": "sin img",
+      "code": "CD001",
+      "category": "Calcetines",
+      "status": true
+    },
+    {
+      "title": "Chaqueta Vaquera",
+      "description": "Chaqueta de mezclilla azul clásica",
+      "price": 49.99,
+      "stock": 50,
+      "thumbnail": "sin img",
+      "code": "CV001",
+      "category": "Chaquetas",
+      "status": true
+    },
+    {
+      "title": "Traje de Baño",
+      "description": "Traje de baño de una pieza negro",
+      "price": 29.99,
+      "stock": 60,
+      "thumbnail": "sin img",
+      "code": "TB001",
+      "category": "Ropa de Baño",
+      "status": true
+    },
+    {
+      "title": "Gafas de Sol",
+      "description": "Gafas de sol polarizadas",
+      "price": 25.99,
+      "stock": 70,
+      "thumbnail": "sin img",
+      "code": "GS001",
+      "category": "Accesorios",
+      "status": true
+    },
+    {
+      "title": "Chaleco Acolchado",
+      "description": "Chaleco acolchado para el invierno",
+      "price": 39.99,
+      "stock": 40,
+      "thumbnail": "sin img",
+      "code": "CA001",
+      "category": "Chaquetas",
+      "status": true
+    },
+    {
+      "title": "Pijama de Algodón",
+      "description": "Pijama de algodón suave de dos piezas",
+      "price": 22.99,
+      "stock": 65,
+      "thumbnail": "sin img",
+      "code": "PA001",
+      "category": "Ropa de Dormir",
+      "status": true
+    },
+    {
+      "title": "Bermudas Beige",
+      "description": "Bermudas casuales beige",
+      "price": 18.99,
+      "stock": 75,
+      "thumbnail": "sin img",
+      "code": "BB002",
+      "category": "Pantalones",
+      "status": true
     }
-  ],
-  "totalPages": 1,
-  "prevPage": null,
-  "nextPage": null,
-  "page": 1,
-  "hasPrevPage": false,
-  "hasNextPage": false,
-  "prevLink": null,
-  "nextLink": null
-}
+]
 ```
 
 ## Inicialización del Proyecto
