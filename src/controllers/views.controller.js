@@ -4,8 +4,7 @@ import { cartModel } from "../models/cart.model.js";
 const productController = new ProductController();
 
 class ViewsController {
-  constructor() {
-  }
+  constructor() {}
 
   async home(req, res) {
     try {
@@ -52,7 +51,7 @@ class ViewsController {
       }
 
       const cartId = req.user.cart.toString();
-      console.log(cartId)
+      console.log(cartId);
 
       let { page = 1, limit = 10 } = req.query;
       page = parseInt(page, 10);
@@ -100,7 +99,7 @@ class ViewsController {
           subtotal: item.quantity * item.product.price,
         };
       });
-      res.render("carts", { products: productsWithSubtotals });
+      res.render("carts", { products: productsWithSubtotals, cartId });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Error interno del servidor" });
