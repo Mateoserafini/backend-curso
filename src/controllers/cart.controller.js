@@ -5,10 +5,10 @@ class CartController {
   async createCart(req, res) {
     try {
       const nuevoCarrito = await cartModel.create({ products: [] });
-      console.log("carrito enviado:", nuevoCarrito); 
+      console.log("Carrito enviado:", nuevoCarrito); 
       return nuevoCarrito; 
     } catch (error) {
-      console.error(error);
+      console.error("Error al crear el carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -22,7 +22,7 @@ class CartController {
       }
       res.json(carrito);
     } catch (error) {
-      console.error(error);
+      console.error("Error al obtener el carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -33,7 +33,6 @@ class CartController {
     const { quantity } = req.body;
 
     try {
-      // Asegurarse de que quantity es un número
       const parsedQuantity = parseInt(quantity, 10);
       if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
         return res.status(400).json({ error: 'Cantidad debe ser un número positivo.' });
@@ -44,21 +43,18 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      // Buscar el índice del producto en el carrito
       const productIndex = carrito.products.findIndex(item => item.product.toString() === productId);
       
       if (productIndex !== -1) {
-        // Si el producto ya está en el carrito, sumamos la cantidad
         carrito.products[productIndex].quantity += parsedQuantity;
       } else {
-        // Si el producto no está en el carrito, lo agregamos
         carrito.products.push({ product: productId, quantity: parsedQuantity });
       }
       
       await carrito.save();
       res.json(carrito);
     } catch (error) {
-      console.error(error);
+      console.error("Error al agregar producto al carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -78,7 +74,7 @@ class CartController {
 
       res.json(carrito);
     } catch (error) {
-      console.error(error);
+      console.error("Error al eliminar producto del carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -94,7 +90,7 @@ class CartController {
       }
       res.json(carrito);
     } catch (error) {
-      console.error(error);
+      console.error("Error al actualizar el carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -118,7 +114,7 @@ class CartController {
 
       res.json(carrito);
     } catch (error) {
-      console.error(error);
+      console.error("Error al actualizar la cantidad del producto en el carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -133,7 +129,7 @@ class CartController {
       }
       res.json(carrito);
     } catch (error) {
-      console.error(error);
+      console.error("Error al eliminar todos los productos del carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -148,6 +144,7 @@ class CartController {
       }
 
       const productsToPurchase = [];
+      const productsOffStock = [];
       let totalAmount = 0;
 
       for (const item of cart.products) {
@@ -160,24 +157,33 @@ class CartController {
           productsToPurchase.push({ product: product._id, quantity });
           totalAmount += product.price * quantity;
         } else {
-          console.log(`Producto ${product.name} no tiene suficiente stock`);
+          console.log(`Producto ${product.title} no tiene suficiente stock`);
+          productsOffStock.push({ product: product._id, title: product.title, quantity });
         }
       }
 
       if (productsToPurchase.length > 0) {
         const ticket = new TicketModel({
           amount: totalAmount,
-          purchaser: req.user.email,  // Suponiendo que el correo del usuario está en req.user.email
+          purchaser: req.user.email,  
         });
 
         await ticket.save();
 
+        // Clear the cart
         cart.products = [];
+
+        // Add out-of-stock products back to the cart
+        for (const item of productsOffStock) {
+          cart.products.push({ product: item.product, quantity: item.quantity });
+        }
+
         await cart.save();
 
         res.status(200).json({
           message: 'Compra completada con éxito',
           ticket,
+          productsOffStock,
         });
       } else {
         res.status(400).json({ error: 'No hay suficiente stock para completar la compra' });
@@ -188,5 +194,8 @@ class CartController {
     }
   }
 }
+
+
+
 
 export default CartController;

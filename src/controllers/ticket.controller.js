@@ -4,7 +4,7 @@ class TicketController {
   async createTicket(req, res) {
     try {
       const { amount, purchaser } = req.body;
-      const newTicket = new Ticket({
+      const newTicket = new TicketModel({
         amount,
         purchaser,
       });
@@ -13,7 +13,7 @@ class TicketController {
       res.status(201).json(newTicket);
     } catch (error) {
       console.error('Error al crear el ticket:', error);
-      res.status(500).send('Error al crear el ticket');
+      res.status(500).json({ error: 'Error al crear el ticket' });
     }
   }
 
@@ -23,7 +23,7 @@ class TicketController {
       res.status(200).json(tickets);
     } catch (error) {
       console.error('Error al obtener los tickets:', error);
-      res.status(500).send('Error al obtener los tickets');
+      res.status(500).json({ error: 'Error al obtener los tickets' });
     }
   }
 
@@ -31,12 +31,12 @@ class TicketController {
     try {
       const ticket = await TicketModel.findById(req.params.id);
       if (!ticket) {
-        return res.status(404).send('Ticket no encontrado');
+        return res.status(404).json({ error: 'Ticket no encontrado' });
       }
       res.status(200).json(ticket);
     } catch (error) {
       console.error('Error al obtener el ticket:', error);
-      res.status(500).send('Error al obtener el ticket');
+      res.status(500).json({ error: 'Error al obtener el ticket' });
     }
   }
 }
