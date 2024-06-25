@@ -20,12 +20,10 @@ import configObject from "./config/config.js";
 
 const app = express();
 
-// Middleware para parsear JSON y urlencoded
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
 
-// Configuración de Handlebars
 const hbs = handlebars.create({
   helpers: {
     multiply: (a, b) => a * b,
@@ -37,7 +35,6 @@ app.engine("handlebars", hbs.engine);
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-// Configuración de sesión
 app.use(
   session({
     secret: configObject.secret,
@@ -50,25 +47,21 @@ app.use(
   })
 );
 
-// Configuración de Passport
 app.use(passport.initialize());
 app.use(passport.session());
 initializePassport();
 
-// Rutas API
 app.use("/api/users", userRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/products", routerProduct);
-app.use("/api/carts", cartRouter);
+app.use("/api/carts",cartRouter);
 app.use('/api/tickets', ticketRoutes);
 app.use("/", routerViews);
 
-// Servidor HTTP
 const httpServer = app.listen(configObject.PORT, () => {
   console.log(`Escuchando en http://localhost:${configObject.PORT}`);
 });
 
-// Configuración de Socket.io
 const socketServer = new Server(httpServer);
 socketProducts(socketServer);
 socketChat(socketServer);

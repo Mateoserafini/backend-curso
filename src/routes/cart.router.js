@@ -1,5 +1,6 @@
 import { Router } from "express";
 import CartController from "../controllers/cart.controller.js";
+import errorHandler from "../errors/errors.handler.js";
 
 const cartController = new CartController();
 const router = Router();
@@ -11,6 +12,6 @@ router.delete("/:cid/products/:pid", cartController.deleteProductFromCart);
 router.put("/:cid", cartController.updateCart);
 router.put("/:cid/products/:pid", cartController.updateProductQuantity);
 router.delete("/:cid", cartController.deleteAllProductsFromCart);
-router.post("/:cid/purchase", cartController.purchaseCart); 
+router.post("/:cid/purchase", cartController.purchaseCart, errorHandler); 
 
 export default router;

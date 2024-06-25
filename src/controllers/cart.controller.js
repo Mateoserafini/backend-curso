@@ -1,5 +1,6 @@
 import { cartModel } from "../models/cart.model.js";
 import { TicketModel } from "../models/ticket.model.js";
+import errorDictionary from "../errors/diccionary.error.js";
 
 class CartController {
   async createCart(req, res) {
@@ -134,7 +135,7 @@ class CartController {
     }
   }
 
-  async purchaseCart(req, res) {
+  async purchaseCart(req, res, next) {
     try {
       const { cid } = req.params;
       const cart = await cartModel.findById(cid).populate('products.product');
@@ -170,10 +171,8 @@ class CartController {
 
         await ticket.save();
 
-        // Clear the cart
         cart.products = [];
 
-        // Add out-of-stock products back to the cart
         for (const item of productsOffStock) {
           cart.products.push({ product: item.product, quantity: item.quantity });
         }
@@ -186,7 +185,9 @@ class CartController {
           productsOffStock,
         });
       } else {
-        res.status(400).json({ error: 'No hay suficiente stock para completar la compra' });
+        console.log("antes del error")
+        next({ code: 'INSUFFICIENT_STOCK' });
+        console.log("despues del error")
       }
     } catch (error) {
       console.error('Error al realizar la compra:', error);

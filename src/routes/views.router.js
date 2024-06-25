@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ViewsController from "../controllers/views.controller.js"
 import { authorize } from "../middleware/auth.js";
+import generarProductos from "../mocking.js";
 
 const viewsController = new ViewsController()
 
@@ -14,5 +15,13 @@ router.get("/carts/:cid", viewsController.cart);
 router.get("/login", viewsController.login);
 router.get("/register", viewsController.register);
 router.get("/profile", viewsController.profile);
+router.get("/mocking", (req, res) => {
+    const productsMocking = [];
+    for (let i = 0; i < 100
+        ; i++ ){
+        productsMocking.push(generarProductos());
+    }
+    res.send(productsMocking)
+})
 
 export default router;
