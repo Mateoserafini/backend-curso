@@ -1,39 +1,40 @@
-import express from "express";
-import { __dirname } from "./utils.js";
-import handlebars from "express-handlebars";
-import { Server } from "socket.io";
-import "./database.js";
-import "dotenv/config";
-import routerProduct from "./routes/products.router.js";
-import routerViews from "./routes/views.router.js";
-import cartRouter from "./routes/cart.router.js";
+import express from 'express';
+import { __dirname } from './utils.js';
+import handlebars from 'express-handlebars';
+import { Server } from 'socket.io';
+import './database.js';
+import 'dotenv/config';
+import routerProduct from './routes/products.router.js';
+import routerViews from './routes/views.router.js';
+import cartRouter from './routes/cart.router.js';
 import ticketRoutes from './routes/ticket.router.js';
-import socketProducts from "./sockets/realtimeproducts.socket.js";
-import socketChat from "./sockets/chat.socket.js";
-import userRouter from "./routes/user.router.js";
-import sessionsRouter from "./routes/user.router.js";
-import session from "express-session";
-import MongoStore from "connect-mongo";
-import passport from "passport";
-import initializePassport from "./libs/passport.js";
-import configObject from "./config/config.js";
+import socketProducts from './sockets/realtimeproducts.socket.js';
+import socketChat from './sockets/chat.socket.js';
+import userRouter from './routes/user.router.js';
+import sessionsRouter from './routes/user.router.js';
+import logger from './utils/logger.js';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import passport from 'passport';
+import initializePassport from './libs/passport.js';
+import configObject from './config/config.js';
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + '/public'));
 
 const hbs = handlebars.create({
   helpers: {
     multiply: (a, b) => a * b,
-    calculateTotal: (products) => products.reduce((total, product) => total + (product.quantity * product.product.price), 0)
-  }
+    calculateTotal: (products) => products.reduce((total, product) => total + product.quantity * product.product.price, 0),
+  },
 });
 
-app.engine("handlebars", hbs.engine);
-app.set("views", __dirname + "/views");
-app.set("view engine", "handlebars");
+app.engine('handlebars', hbs.engine);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'handlebars');
 
 app.use(
   session({
@@ -51,15 +52,24 @@ app.use(passport.initialize());
 app.use(passport.session());
 initializePassport();
 
-app.use("/api/users", userRouter);
-app.use("/api/sessions", sessionsRouter);
-app.use("/api/products", routerProduct);
-app.use("/api/carts",cartRouter);
+app.use('/api/users', userRouter);
+app.use('/api/sessions', sessionsRouter);
+app.use('/api/products', routerProduct);
+app.use('/api/carts', cartRouter);
 app.use('/api/tickets', ticketRoutes);
-app.use("/", routerViews);
+app.get('/loggertest', (req, res) => {
+  logger.debug('Debug level log');
+  logger.http('HTTP level log');
+  logger.info('Info level log');
+  logger.warning('Warning level log');
+  logger.error('Error level log');
+  logger.fatal('Fatal level log');
+  res.send('Logger test completed');
+});
+app.use('/', routerViews);
 
 const httpServer = app.listen(configObject.PORT, () => {
-  console.log(`Escuchando en http://localhost:${configObject.PORT}`);
+  logger.info(`Escuchando en http://localhost:${configObject.PORT}`);
 });
 
 const socketServer = new Server(httpServer);
