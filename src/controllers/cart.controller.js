@@ -1,15 +1,16 @@
 import { cartModel } from "../models/cart.model.js";
 import { TicketModel } from "../models/ticket.model.js";
+import logger from "../utils/logger.js";
 import errorDictionary from "../errors/diccionary.error.js";
 
 class CartController {
   async createCart(req, res) {
     try {
       const nuevoCarrito = await cartModel.create({ products: [] });
-      console.log("Carrito enviado:", nuevoCarrito); 
-      return nuevoCarrito; 
+      logger.info("Carrito creado:", nuevoCarrito);
+      return nuevoCarrito;
     } catch (error) {
-      console.error("Error al crear el carrito:", error);
+      logger.error("Error al crear el carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -17,13 +18,15 @@ class CartController {
   async getCartById(req, res) {
     const cartId = req.params.cid;
     try {
-      const carrito = await cartModel.findById(cartId).populate('products.product');
+      const carrito = await cartModel
+        .findById(cartId)
+        .populate("products.product");
       if (!carrito) {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
       res.json(carrito);
     } catch (error) {
-      console.error("Error al obtener el carrito:", error);
+      logger.error("Error al obtener el carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -36,7 +39,9 @@ class CartController {
     try {
       const parsedQuantity = parseInt(quantity, 10);
       if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
-        return res.status(400).json({ error: 'Cantidad debe ser un número positivo.' });
+        return res
+          .status(400)
+          .json({ error: "Cantidad debe ser un número positivo." });
       }
 
       const carrito = await cartModel.findById(cartId);
@@ -44,18 +49,24 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      const productIndex = carrito.products.findIndex(item => item.product.toString() === productId);
-      
+      const productIndex = carrito.products.findIndex(
+        (item) => item.product.toString() === productId
+      );
+
       if (productIndex !== -1) {
         carrito.products[productIndex].quantity += parsedQuantity;
       } else {
         carrito.products.push({ product: productId, quantity: parsedQuantity });
       }
-      
+
       await carrito.save();
+      logger.info(`Producto agregado al carrito ${cartId}`, {
+        productId,
+        quantity: parsedQuantity,
+      });
       res.json(carrito);
     } catch (error) {
-      console.error("Error al agregar producto al carrito:", error);
+      logger.error("Error al agregar producto al carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -70,12 +81,14 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      carrito.products = carrito.products.filter(product => product.product.toString() !== productId);
+      carrito.products = carrito.products.filter(
+        (product) => product.product.toString() !== productId
+      );
       await carrito.save();
-
+      logger.info(`Producto ${productId} eliminado del carrito ${cartId}`);
       res.json(carrito);
     } catch (error) {
-      console.error("Error al eliminar producto del carrito:", error);
+      logger.error("Error al eliminar producto del carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -85,13 +98,16 @@ class CartController {
     const { products } = req.body;
 
     try {
-      const carrito = await cartModel.findByIdAndUpdate(cartId, { products }, { new: true }).populate('products.product');
+      const carrito = await cartModel
+        .findByIdAndUpdate(cartId, { products }, { new: true })
+        .populate("products.product");
       if (!carrito) {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
+      logger.info(`Carrito ${cartId} actualizado`, { products });
       res.json(carrito);
     } catch (error) {
-      console.error("Error al actualizar el carrito:", error);
+      logger.error("Error al actualizar el carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -107,15 +123,23 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      const productToUpdate = carrito.products.find(product => product.product.toString() === productId);
+      const productToUpdate = carrito.products.find(
+        (product) => product.product.toString() === productId
+      );
       if (productToUpdate) {
         productToUpdate.quantity = quantity;
         await carrito.save();
+        logger.info(
+          `Cantidad del producto ${productId} en el carrito ${cartId} actualizada a ${quantity}`
+        );
       }
 
       res.json(carrito);
     } catch (error) {
-      console.error("Error al actualizar la cantidad del producto en el carrito:", error);
+      logger.error(
+        "Error al actualizar la cantidad del producto en el carrito:",
+        error
+      );
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -124,13 +148,16 @@ class CartController {
     const cartId = req.params.cid;
 
     try {
-      const carrito = await cartModel.findByIdAndUpdate(cartId, { products: [] }, { new: true }).populate('products.product');
+      const carrito = await cartModel
+        .findByIdAndUpdate(cartId, { products: [] }, { new: true })
+        .populate("products.product");
       if (!carrito) {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
+      logger.info(`Todos los productos del carrito ${cartId} eliminados`);
       res.json(carrito);
     } catch (error) {
-      console.error("Error al eliminar todos los productos del carrito:", error);
+      logger.error("Error al eliminar todos los productos del carrito:", error);
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
@@ -138,9 +165,13 @@ class CartController {
   async purchaseCart(req, res, next) {
     try {
       const { cid } = req.params;
-      const cart = await cartModel.findById(cid).populate('products.product');
+      const cart = await cartModel.findById(cid).populate("products.product");
 
       if (!cart) {
+        logger.warning(
+          "Carrito no encontrado al intentar realizar la compra:",
+          cid
+        );
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
@@ -158,15 +189,19 @@ class CartController {
           productsToPurchase.push({ product: product._id, quantity });
           totalAmount += product.price * quantity;
         } else {
-          console.log(`Producto ${product.title} no tiene suficiente stock`);
-          productsOffStock.push({ product: product._id, title: product.title, quantity });
+          logger.warning(`Producto ${product.title} no tiene suficiente stock`);
+          productsOffStock.push({
+            product: product._id,
+            title: product.title,
+            quantity,
+          });
         }
       }
 
       if (productsToPurchase.length > 0) {
         const ticket = new TicketModel({
           amount: totalAmount,
-          purchaser: req.user.email,  
+          purchaser: req.user.email,
         });
 
         await ticket.save();
@@ -174,29 +209,30 @@ class CartController {
         cart.products = [];
 
         for (const item of productsOffStock) {
-          cart.products.push({ product: item.product, quantity: item.quantity });
+          cart.products.push({
+            product: item.product,
+            quantity: item.quantity,
+          });
         }
 
         await cart.save();
 
+        logger.info("Compra completada con éxito.");
+
         res.status(200).json({
-          message: 'Compra completada con éxito',
+          message: "Compra completada con éxito",
           ticket,
           productsOffStock,
         });
       } else {
-        console.log("antes del error")
-        next({ code: 'INSUFFICIENT_STOCK' });
-        console.log("despues del error")
+        logger.error("Error al realizar la compra: No hay suficiente stock");
+        next({ code: "INSUFFICIENT_STOCK" });
       }
     } catch (error) {
-      console.error('Error al realizar la compra:', error);
-      res.status(500).json({ error: 'Error al realizar la compra' });
+      logger.error("Error al realizar la compra:", error);
+      res.status(500).json({ error: "Error al realizar la compra" });
     }
   }
 }
-
-
-
 
 export default CartController;
