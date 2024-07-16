@@ -1,4 +1,6 @@
 import CartController from "../controllers/cart.controller.js";
+import mongoose from "mongoose";
+import User from "../models/usuario.model.js";
 
 const cartController = new CartController();
 
@@ -101,6 +103,26 @@ class UserController {
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
       next(error);
+    }
+  }
+
+  async changeUserRoleGet(req, res) {
+    const { uid } = req.params;
+    const { newRole } = req.query;
+  
+    try {
+      const user = await User.findById(uid);
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado" });
+      }
+  
+      user.role = newRole;
+      await user.save();
+  
+      res.json({ message: `Rol de usuario actualizado a ${newRole}` });
+    } catch (err) {
+      console.error("Error al cambiar el rol del usuario:", err);
+      res.status(500).json({ message: "Error interno del servidor" });
     }
   }
 }

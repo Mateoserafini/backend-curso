@@ -2,6 +2,7 @@
 import express from "express";
 import passport from "passport";
 import UserController from "../controllers/user.controller.js";
+import { authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 const userController = new UserController();
@@ -14,5 +15,6 @@ router.get("/faillogin", userController.failLogin);
 router.get("/logout", userController.logout);
 router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
 router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }),userController.githubCallback);
+router.get("/premium/:uid", authorize("admin"), userController.changeUserRoleGet);
 
 export default router;
