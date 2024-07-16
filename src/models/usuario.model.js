@@ -24,8 +24,7 @@ const schema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "user"],
-    default: "user",
+    enum: ["admin", "user", "premium"],
   },
   cart: {
     type: mongoose.Schema.Types.ObjectId,
