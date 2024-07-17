@@ -1,3 +1,15 @@
+let currentUser;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/api/users/current');
+    currentUser = await response.json();
+    console.log('Usuario de la sesión:', currentUser);
+  } catch (error) {
+    console.error('Error al obtener el usuario de la sesión:', error);
+  }
+});
+
 const socketClient = io();
 
 socketClient.on("enviodeproducts", (productos) => {
@@ -7,7 +19,6 @@ socketClient.on("enviodeproducts", (productos) => {
 
 socketClient.on("productUpdated", (updatedProduct) => {
   console.log("Producto actualizado:", updatedProduct);
-  // Solicitar la lista de productos nuevamente
   socketClient.emit("requestProducts");
 });
 
@@ -112,6 +123,7 @@ form.addEventListener("submit", (evt) => {
     price: form.elements.price.value,
     code: form.elements.code.value,
     status: form.elements.status.checked,
+    owner: currentUser.email
   };
 
   console.log("Datos del nuevo producto:", newProduct);
