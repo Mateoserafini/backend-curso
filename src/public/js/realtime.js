@@ -110,9 +110,15 @@ function addEventListenersToEditForms() {
 
 // Maneja el formulario de añadir productos
 const form = document.getElementById("formProduct");
+
 form.addEventListener("submit", (evt) => {
   evt.preventDefault();
   console.log("Añadiendo nuevo producto");
+
+  if (currentUser.role !== "admin" && currentUser.role !== "premium") {
+    console.error("Usuario no autorizado para añadir productos");
+    return;
+  }
 
   const newProduct = {
     title: form.elements.title.value,
@@ -122,14 +128,18 @@ form.addEventListener("submit", (evt) => {
     category: form.elements.category.value,
     price: form.elements.price.value,
     code: form.elements.code.value,
-    status: form.elements.status.checked,
-    owner: currentUser.email
+    status: form.elements.status.checked
   };
+
+  if (currentUser.role === "premium") {
+    newProduct.owner = currentUser.email;
+  }
 
   console.log("Datos del nuevo producto:", newProduct);
   socketClient.emit("addProduct", newProduct);
   form.reset();
 });
+
 
 // Maneja el evento de eliminación de productos
 function eliminarProducto(productId) {
