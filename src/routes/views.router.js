@@ -30,4 +30,7 @@ router.get("/mocking", (req, res) => {
   res.send(productsMocking);
 });
 
+router.get("/reset-password", viewsController.renderGenerarResetPassword)
+router.get("/password", viewsController.renderResetPassword)
+router.get("/confirmacionEnvio", viewsController.renderConfirmacion)
 export default router;

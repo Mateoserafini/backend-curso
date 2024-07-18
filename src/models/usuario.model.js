@@ -29,6 +29,10 @@ const schema = new mongoose.Schema({
   cart: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Cart",
+  },
+  resetToken:{
+    token: String,
+    expire: Date
   }
 });
 

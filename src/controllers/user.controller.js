@@ -1,8 +1,11 @@
 import CartController from "../controllers/cart.controller.js";
-import mongoose from "mongoose";
-import User from "../models/usuario.model.js";
+import UsuarioModel from "../models/usuario.model.js"; // Asegúrate de que la ruta sea correcta
+import EmailManager from "../services/email.js";
+import { generarResetToken } from "../utils/tokenreset.js";
+import bcrypt from "bcryptjs";
 
 const cartController = new CartController();
+const emailManager = new EmailManager();
 
 function createUserDTO(user) {
   return {
@@ -109,20 +112,112 @@ class UserController {
   async changeUserRoleGet(req, res) {
     const { uid } = req.params;
     const { newRole } = req.query;
-  
+
     try {
-      const user = await User.findById(uid);
+      const user = await UsuarioModel.findById(uid);
       if (!user) {
         return res.status(404).json({ message: "Usuario no encontrado" });
       }
-  
+
       user.role = newRole;
       await user.save();
-  
+
       res.json({ message: `Rol de usuario actualizado a ${newRole}` });
     } catch (err) {
       console.error("Error al cambiar el rol del usuario:", err);
       res.status(500).json({ message: "Error interno del servidor" });
+    }
+  }
+
+  async requestPasswordReset(req, res) {
+    const { email } = req.body;
+    try {
+      console.log("Iniciando requestPasswordReset con email:", email);
+
+      const user = await UsuarioModel.findOne({ email });
+      if (!user) {
+        console.log("Usuario no encontrado con email:", email);
+        return res.status(404).send("Usuario no encontrado");
+      }
+
+      console.log("Usuario encontrado:", user);
+
+      const token = generarResetToken();
+      user.resetToken = {
+        token: token,
+        expire: new Date(Date.now() + 3600000), // 1 hora
+      };
+
+      console.log("Token generado:", token);
+
+      await user.save();
+      console.log("Usuario guardado con token de restablecimiento");
+
+      await emailManager.enviarCorreoRestablecimiento(
+        email,
+        user.first_name,
+        token
+      );
+      console.log("Correo de restablecimiento enviado a:", email);
+
+      res.redirect("/confirmacionEnvio");
+    } catch (error) {
+      console.error("Error en requestPasswordReset:", error);
+      res.status(500).send("Error interno del servidor");
+    }
+  }
+
+  async resetPassword(req, res) {
+    const { email, password, token } = req.body;
+    try {
+      console.log(
+        "Iniciando resetPassword con email:",
+        email,
+        "y token:",
+        token
+      );
+
+      const user = await UsuarioModel.findOne({ email });
+      if (!user) {
+        console.log("Usuario no encontrado con email:", email);
+        return res.render("passwordreset", { error: "Usuario no encontrado" });
+      }
+
+      console.log("Usuario encontrado:", user);
+
+      const resetToken = user.resetToken;
+      if (!resetToken || resetToken.token !== token) {
+        console.log("Token inválido:", token);
+        return res.render("resetPassword", { error: "El token es inválido" });
+      }
+
+      const ahora = new Date();
+      if (ahora > resetToken.expire) {
+        console.log("Token expirado:", token);
+        return res.render("resetPassword", { error: "El token ha expirado" });
+      }
+
+      const isValidPassword = await bcrypt.compare(password, user.password);
+      if (isValidPassword) {
+        console.log("La nueva contraseña no puede ser igual a la anterior");
+        return res.render("resetPassword", { //aca esta el error
+          error: "La nueva contraseña no puede ser igual a la anterior",
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+      user.resetToken = undefined; 
+      await user.save();
+
+      console.log("Contraseña actualizada para el usuario:", email);
+
+      res.redirect("/login");
+    } catch (error) {
+      console.error("Error en resetPassword:", error);
+      res
+        .status(500)
+        .render("passwordreset", { error: "Error interno del servidor" });
     }
   }
 }

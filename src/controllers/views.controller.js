@@ -136,6 +136,19 @@ class ViewsController {
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
+
+  async renderGenerarResetPassword(req, res){
+    res.render("generarResetPassword")
+  }
+
+  async renderResetPassword(req, res){
+    res.render("resetPassword")
+  }
+
+  async renderConfirmacion(req, res){
+    res.render("confirmacionEnvio"); 
+}
+  
 }
 
 export default ViewsController;

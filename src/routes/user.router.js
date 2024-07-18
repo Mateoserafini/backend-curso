@@ -16,5 +16,7 @@ router.get("/logout", userController.logout);
 router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
 router.get("/githubcallback", passport.authenticate("github", { failureRedirect: "/login" }),userController.githubCallback);
 router.get("/premium/:uid", authorize("admin"), userController.changeUserRoleGet);
+router.post("/requestPasswordReset", userController.requestPasswordReset);
+router.post("/reset-password", userController.resetPassword);
 
 export default router;
