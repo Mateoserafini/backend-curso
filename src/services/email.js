@@ -18,40 +18,45 @@ class EmailManager {
             const mailOptions = {
                 from: "matuserafini@gmail.com",
                 to: ticket.purchaser,
-                subject: "Confirmacion de compra",
+                subject: "Confirmación de Compra",
                 html: `
-                        <h1> Confirmación de compra </h1>
-                        <p>Gracias por tu compra, ${first_name}.</p>
-                        <p>El número de tu orden es: ${ticket.code} </p>
+                    <h1>Confirmación de Compra</h1>
+                    <p>Hola ${first_name},</p>
+                    <p>Gracias por tu compra. A continuación, encontrarás los detalles de tu pedido:</p>
+                    <p>Número de orden: <strong>${ticket.code}</strong></p>
+                    <p>Si tienes alguna pregunta, no dudes en contactarnos.</p>
+                    <p>Saludos,</p>
+                    <p>El equipo de coder Ecommerse</p>
                 `
-            }
+            };
             await this.transporter.sendMail(mailOptions);
         } catch (error) {
-            console.log("Error al enviar el mail");
+            console.log("Error al enviar el correo de confirmación de compra", error);
         }
     }
-
+    
     async enviarCorreoRestablecimiento(email, first_name, token) {
         try {
             const mailOptions = {
                 from: "matuserafini@gmail.com",
                 to: email,
-                subject: "Restablecimiento de contraseña",
+                subject: "Restablecimiento de Contraseña",
                 html: `
-                        <h1> Restablecimiento de contraseña </h1>
-                        <p>Hola ${first_name} ! ke ase? </p>
-                        <p>Pediste restablecer la contraseña porque siempre te olvidas de todo. Te enviamos el codigo de confirmacion: </p>
-                        <strong> ${token} </strong>
-                        <p> Este codigo expira en una  hora </p>
-                        <a href="http://localhost:8080/password"> Restablecer contraseña </a>
-
+                    <h1>Restablecimiento de Contraseña</h1>
+                    <p>Hola ${first_name},</p>
+                    <p>Hemos recibido una solicitud para restablecer tu contraseña. Utiliza el siguiente código para completar el proceso:</p>
+                    <p>Código de confirmación: <strong>${token}</strong></p>
+                    <p>Este código expira en una hora.</p>
+                    <p>Puedes restablecer tu contraseña haciendo clic en el siguiente enlace:</p>
+                    <a href="http://localhost:8080/password">Restablecer Contraseña</a>
+                    <p>Si no solicitaste este cambio, por favor ignora este correo.</p>
+                    <p>Saludos,</p>
+                    <p>El equipo de coder Ecommerse</p>
                 `
-            }
+            };
             await this.transporter.sendMail(mailOptions);
-
-
         } catch (error) {
-            console.log("Error al enviar el correo de restablecimiento");
+            console.log("Error al enviar el correo de restablecimiento de contraseña", error);
         }
     }
 
