@@ -1,8 +1,10 @@
 import { cartModel } from "../models/cart.model.js";
 import { TicketModel } from "../models/ticket.model.js";
 import { productsModel } from "../models/products.model.js"; 
+import EmailManager from "../services/email.js";
 import logger from "../utils/logger.js";
-import errorDictionary from "../errors/diccionary.error.js";
+
+const emailManager = new EmailManager();
 
 class CartController {
   async createCart(req, res) {
@@ -36,7 +38,7 @@ class CartController {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     const { quantity } = req.body;
-    const userId = req.user.email; // Obtener el ID del usuario
+    const userId = req.user.email; 
 
     try {
       const parsedQuantity = parseInt(quantity, 10);
@@ -51,13 +53,11 @@ class CartController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
 
-      // Obtener el producto
-      const product = await productsModel.findById(productId); // Usa el modelo de producto importado
+      const product = await productsModel.findById(productId); 
       if (!product) {
         return res.status(404).json({ error: "Producto no encontrado" });
       }
 
-      // Verificar si el usuario es premium y es dueño del producto
       if (req.user.role === 'premium' && product.owner.toString() === userId.toString()) {
         return res.status(403).json({ error: 'No puedes agregar tu propio producto al carrito' });
       }
@@ -179,23 +179,20 @@ class CartController {
     try {
       const { cid } = req.params;
       const cart = await cartModel.findById(cid).populate("products.product");
-
+  
       if (!cart) {
-        logger.warning(
-          "Carrito no encontrado al intentar realizar la compra:",
-          cid
-        );
+        logger.warning("Carrito no encontrado al intentar realizar la compra:", cid);
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
-
+  
       const productsToPurchase = [];
       const productsOffStock = [];
       let totalAmount = 0;
-
+  
       for (const item of cart.products) {
         const product = item.product;
         const quantity = item.quantity;
-
+  
         if (product.stock >= quantity) {
           product.stock -= quantity;
           await product.save();
@@ -210,28 +207,32 @@ class CartController {
           });
         }
       }
-
+  
       if (productsToPurchase.length > 0) {
         const ticket = new TicketModel({
           amount: totalAmount,
           purchaser: req.user.email,
         });
-
+  
+        const firstName = req.user.first_name; 
+  
+        emailManager.enviarCorreoCompra(firstName, ticket);
+  
         await ticket.save();
-
+  
         cart.products = [];
-
+  
         for (const item of productsOffStock) {
           cart.products.push({
             product: item.product,
             quantity: item.quantity,
           });
         }
-
+  
         await cart.save();
-
+  
         logger.info("Compra completada con éxito.");
-
+  
         res.status(200).json({
           message: "Compra completada con éxito",
           ticket,

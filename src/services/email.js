@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer"
+import configObject from "../config/config.js";
 
 class EmailManager {
     constructor() {
@@ -6,22 +7,22 @@ class EmailManager {
             service: "gmail",
             port: 587,
             auth: {
-                user: "matuserafini@gmail.com", 
-                pass: "dgvn brdh bzud hkiw"
+                user: configObject.mailerUser, 
+                pass: configObject.mailerPassword
             }
         })
     }
 
-    async enviarCorreoCompra(email, first_name, ticket) {
+    async enviarCorreoCompra(first_name, ticket) {
         try {
             const mailOptions = {
                 from: "matuserafini@gmail.com",
-                to: email,
+                to: ticket.purchaser,
                 subject: "Confirmacion de compra",
                 html: `
                         <h1> Confirmación de compra </h1>
-                        <p>Gracias por tu compra, ${first_name} </p>
-                        <p>El número de tu orden es: ${ticket} </p>
+                        <p>Gracias por tu compra, ${first_name}.</p>
+                        <p>El número de tu orden es: ${ticket.code} </p>
                 `
             }
             await this.transporter.sendMail(mailOptions);
