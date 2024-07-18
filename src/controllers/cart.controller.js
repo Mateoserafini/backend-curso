@@ -1,5 +1,6 @@
 import { cartModel } from "../models/cart.model.js";
 import { TicketModel } from "../models/ticket.model.js";
+import { productsModel } from "../models/products.model.js"; 
 import logger from "../utils/logger.js";
 import errorDictionary from "../errors/diccionary.error.js";
 
@@ -35,6 +36,7 @@ class CartController {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     const { quantity } = req.body;
+    const userId = req.user.email; // Obtener el ID del usuario
 
     try {
       const parsedQuantity = parseInt(quantity, 10);
@@ -47,6 +49,17 @@ class CartController {
       const carrito = await cartModel.findById(cartId);
       if (!carrito) {
         return res.status(404).json({ error: "Carrito no encontrado" });
+      }
+
+      // Obtener el producto
+      const product = await productsModel.findById(productId); // Usa el modelo de producto importado
+      if (!product) {
+        return res.status(404).json({ error: "Producto no encontrado" });
+      }
+
+      // Verificar si el usuario es premium y es dueño del producto
+      if (req.user.role === 'premium' && product.owner.toString() === userId.toString()) {
+        return res.status(403).json({ error: 'No puedes agregar tu propio producto al carrito' });
       }
 
       const productIndex = carrito.products.findIndex(

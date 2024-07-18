@@ -94,10 +94,21 @@ class ViewsController {
         return res.status(404).json({ error: "Carrito no encontrado" });
       }
       const productsWithSubtotals = cart.products.map((item) => {
-        return {
-          ...item.toObject(),
-          subtotal: item.quantity * item.product.price,
-        };
+        if (item.product) {
+          return {
+            ...item.toObject(),
+            subtotal: item.quantity * item.product.price,
+          };
+        } else {
+          return {
+            ...item.toObject(),
+            subtotal: 0,
+            product: {
+              title: "Producto no encontrado",
+              price: 0,
+            },
+          };
+        }
       });
       res.render("carts", { products: productsWithSubtotals, cartId });
     } catch (error) {
