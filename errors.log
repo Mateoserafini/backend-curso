@@ -1,10 +1,10 @@
-2024-07-16 11:45:08 [32minfo[39m: Escuchando en http://localhost:8080
-2024-07-18 17:09:02 [32minfo[39m: Escuchando en http://localhost:8080
-2024-07-18 17:10:08 [32minfo[39m: Producto agregado al carrito 66992d0fc07000e2f88f05b5
-2024-07-18 17:10:11 [32minfo[39m: Producto agregado al carrito 66992d0fc07000e2f88f05b5
-2024-07-18 17:10:17 [32minfo[39m: Compra completada con éxito.
-2024-07-18 17:10:45 [32minfo[39m: Producto agregado al carrito 66992d0fc07000e2f88f05b5
-2024-07-18 17:10:49 [33mwarning[39m: Producto admin product no tiene suficiente stock
-2024-07-18 17:10:49 [31merror[39m: Error al realizar la compra: No hay suficiente stock
-2024-07-18 17:11:12 [33mwarning[39m: Producto admin product no tiene suficiente stock
-2024-07-18 17:11:12 [31merror[39m: Error al realizar la compra: No hay suficiente stock
+2024-07-18 17:57:56 [32minfo[39m: Escuchando en http://localhost:8080
+2024-07-18 17:58:04 [32minfo[39m: Carrito creado:
+2024-07-18 17:58:19 [32minfo[39m: Carrito creado:
+2024-07-18 17:58:32 [32minfo[39m: Carrito creado:
+2024-07-18 18:01:49 [32minfo[39m: Producto agregado al carrito 669981eb5cf1e66b0cb0190d
+2024-07-18 18:01:53 [32minfo[39m: Producto agregado al carrito 669981eb5cf1e66b0cb0190d
+2024-07-18 18:02:07 [32minfo[39m: Compra completada con éxito.
+2024-07-18 18:02:31 [32minfo[39m: Producto agregado al carrito 669981eb5cf1e66b0cb0190d
+2024-07-18 18:02:36 [33mwarning[39m: Producto admin no tiene suficiente stock
+2024-07-18 18:02:36 [31merror[39m: Error al realizar la compra: No hay suficiente stock
