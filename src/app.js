@@ -2,6 +2,8 @@ import express from 'express';
 import { __dirname } from './utils.js';
 import handlebars from 'express-handlebars';
 import { Server } from 'socket.io';
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 import './database.js';
 import 'dotenv/config';
 import routerProduct from './routes/products.router.js';
@@ -75,3 +77,17 @@ const httpServer = app.listen(configObject.PORT, () => {
 const socketServer = new Server(httpServer);
 socketProducts(socketServer);
 socketChat(socketServer);
+
+const swaggerOptions = {
+  definition: {
+      openapi: "3.0.1",
+      info: {
+          title: "Documentacion de la app Ecommerce", 
+          description: "App creada durante el curso de backend de coderhouse."
+      }
+  }, 
+  apis: ["./src/docs/**/*.yaml"]
+}
+
+const specs = swaggerJSDoc(swaggerOptions); 
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));

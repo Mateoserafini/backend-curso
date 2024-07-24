@@ -1,0 +1,211 @@
+paths:
+  /api/users:
+    post:
+      summary: Registra un nuevo usuario.
+      tags:
+        - Users
+      requestBody:
+        description: Datos del nuevo usuario.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                age:
+                  type: integer
+      responses:
+        '400':
+          description: Credenciales inválidas.
+        '500':
+          description: Error al crear el usuario.
+
+  /api/users/current:
+    get:
+      summary: Obtiene la información del usuario actual.
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Información del usuario.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+                  cart:
+                    _id: string
+        '400':
+          description: Credenciales inválidas.
+        '500':
+          description: Error al mostrar el usuario.
+
+  /api/users/failedRegister:
+    get:
+      summary: Muestra un mensaje de registro fallido.
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Mensaje de registro fallido.
+
+  /api/users/login:
+    post:
+      summary: Inicia sesión de un usuario.
+      tags:
+        - Users
+      requestBody:
+        description: Credenciales del usuario.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '302':
+          description: Redirecciona a la página de perfil.
+        '400':
+          description: Credenciales inválidas.
+        '500':
+          description: Error en el inicio de sesión.
+
+  /api/users/faillogin:
+    get:
+      summary: Muestra un mensaje de inicio de sesión fallido.
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Mensaje de inicio de sesión fallido.
+
+  /api/users/logout:
+    get:
+      summary: Cierra sesión del usuario.
+      tags:
+        - Users
+      responses:
+        '302':
+          description: Redirecciona a la página de inicio de sesión.
+        '500':
+          description: Error al cerrar sesión.
+
+  /api/users/github:
+    get:
+      summary: Inicia sesión con GitHub.
+      tags:
+        - Users
+      responses:
+        '302':
+          description: Redirecciona a la página de perfil.
+
+  /api/users/githubcallback:
+    get:
+      summary: Maneja la respuesta de GitHub después de la autenticación.
+      tags:
+        - Users
+      responses:
+        '302':
+          description: Redirecciona a la página de perfil.
+        '500':
+          description: Error en la autenticación de GitHub.
+
+  /api/users/premium/{uid}:
+    get:
+      summary: Cambia el rol del usuario a premium o viceversa.
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          schema:
+            type: string
+          description: ID del usuario.
+        - in: query
+          name: newRole
+          required: true
+          schema:
+            type: string
+            enum:
+              - admin
+              - user
+              - premium
+          description: Nuevo rol del usuario.
+      responses:
+        '200':
+          description: Rol del usuario actualizado.
+        '404':
+          description: Usuario no encontrado.
+        '500':
+          description: Error interno del servidor.
+
+  /api/users/requestPasswordReset:
+    post:
+      summary: Solicita un restablecimiento de contraseña.
+      tags:
+        - Users
+      requestBody:
+        description: Correo del usuario para restablecer la contraseña.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '302':
+          description: Redirecciona a la página de confirmación de envío.
+        '404':
+          description: Usuario no encontrado.
+        '500':
+          description: Error interno del servidor.
+
+  /api/users/reset-password:
+    post:
+      summary: Restablece la contraseña del usuario.
+      tags:
+        - Users
+      requestBody:
+        description: Datos para restablecer la contraseña.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                token:
+                  type: string
+      responses:
+        '302':
+          description: Redirecciona a la página de inicio de sesión.
+        '400':
+          description: Error en el token o contraseña.
+        '500':
+          description: Error interno del servidor.
