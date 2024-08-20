@@ -14,6 +14,7 @@ function createUserDTO(user) {
     email: user.email,
     role: user.role,
     cart: user.cart,
+    lastLogin: user.lastLogin
   };
 }
 
@@ -53,6 +54,16 @@ class UserController {
     }
   }
 
+  async getAllUsers(req, res) {
+    try {
+      const allUsers = await UsuarioModel.find({},'first_name last_name email role');
+      res.json(allUsers);
+    } catch (error) {
+      console.error("Error al obtener todos los usuarios: ", error);
+      res.status(500).send("Error al obtener todos los usuarios.");
+    }
+  }
+
   failedRegister(req, res) {
     res.send("Registro fallido");
   }
@@ -62,7 +73,10 @@ class UserController {
       if (!req.user) {
         return res.status(400).send("Credenciales inválidas");
       }
-
+      await UsuarioModel.findByIdAndUpdate(req.user._id, {
+        lastLogin: new Date()
+      })
+      console.log("lastlogin")
       req.session.user = createUserDTO(req.user);
       req.session.login = true;
       res.redirect("/profile");
@@ -99,7 +113,10 @@ class UserController {
         userWithCart.cart = newCart._id;
         await userWithCart.save();
       }
-
+      await UsuarioModel.findByIdAndUpdate(req.user._id, {
+        lastLogin: new Date()
+      })
+      console.log("lastlogin")
       req.session.user = createUserDTO(userWithCart);
       req.session.login = true;
       res.redirect("/profile");

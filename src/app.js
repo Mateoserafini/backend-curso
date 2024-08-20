@@ -45,7 +45,7 @@ app.use(
     saveUninitialized: true,
     store: MongoStore.create({
       mongoUrl: configObject.mongoURL,
-      ttl: 3600, // 1 hora
+      ttl: 600, 
     }),
   })
 );

@@ -33,6 +33,10 @@ const schema = new mongoose.Schema({
   resetToken:{
     token: String,
     expire: Date
+  },
+  lastLogin: {
+    type: Date,
+    default: Date.now,
   }
 });
 

@@ -8,6 +8,7 @@ const router = express.Router();
 const userController = new UserController();
 
 router.post("/", passport.authenticate("register", { failureRedirect: "/failedRegister" }), userController.register);
+router.get('/', userController.getAllUsers);
 router.get("/current", userController.getCurrentUser);
 router.get("/failedRegister", userController.failedRegister);
 router.post("/login",passport.authenticate("login", { failureRedirect: "/api/sessions/faillogin" }),userController.login);
