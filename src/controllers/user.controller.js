@@ -14,7 +14,7 @@ function createUserDTO(user) {
     email: user.email,
     role: user.role,
     cart: user.cart,
-    lastLogin: user.lastLogin
+    lastLogin: user.lastLogin,
   };
 }
 
@@ -56,13 +56,44 @@ class UserController {
 
   async getAllUsers(req, res) {
     try {
-      const allUsers = await UsuarioModel.find({},'first_name last_name email role');
+      const allUsers = await UsuarioModel.find(
+        {},
+        "first_name last_name email role"
+      );
       res.json(allUsers);
     } catch (error) {
       console.error("Error al obtener todos los usuarios: ", error);
       res.status(500).send("Error al obtener todos los usuarios.");
     }
   }
+
+  async deleteInactiveUsers(req, res) {
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000); // 30 minutos en milisegundos
+    try {
+      // Buscar usuarios inactivos con rol "user"
+      const inactiveUsers = await UsuarioModel.find({
+        lastLogin: { $lt: thirtyMinutesAgo },
+        role: "user" 
+      });
+  
+      res.json(inactiveUsers);
+  
+      // Eliminar a los usuarios inactivos
+      /* for (const user of inactiveUsers) {
+        await UsuarioModel.findByIdAndDelete(user._id);
+        // Enviar un correo electrónico notificando al usuario sobre la eliminación
+        await emailManager.send({
+          to: user.email,
+          subject: "Cuenta eliminada por inactividad",
+          text: "Tu cuenta ha sido eliminada debido a inactividad.",
+        });
+      } */
+    } catch (error) {
+      console.error("Error al eliminar a los usuarios inactivos: ", error);
+      res.status(500).send("Error al eliminar a los usuarios inactivos.");
+    }
+  }
+  
 
   failedRegister(req, res) {
     res.send("Registro fallido");
@@ -74,9 +105,9 @@ class UserController {
         return res.status(400).send("Credenciales inválidas");
       }
       await UsuarioModel.findByIdAndUpdate(req.user._id, {
-        lastLogin: new Date()
-      })
-      console.log("lastlogin")
+        lastLogin: new Date(),
+      });
+      console.log("lastlogin");
       req.session.user = createUserDTO(req.user);
       req.session.login = true;
       res.redirect("/profile");
@@ -114,9 +145,9 @@ class UserController {
         await userWithCart.save();
       }
       await UsuarioModel.findByIdAndUpdate(req.user._id, {
-        lastLogin: new Date()
-      })
-      console.log("lastlogin")
+        lastLogin: new Date(),
+      });
+      console.log("lastlogin");
       req.session.user = createUserDTO(userWithCart);
       req.session.login = true;
       res.redirect("/profile");
@@ -217,14 +248,15 @@ class UserController {
       const isValidPassword = await bcrypt.compare(password, user.password);
       if (isValidPassword) {
         console.log("La nueva contraseña no puede ser igual a la anterior");
-        return res.render("resetPassword", { //aca esta el error
+        return res.render("resetPassword", {
+          //aca esta el error
           error: "La nueva contraseña no puede ser igual a la anterior",
         });
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
       user.password = hashedPassword;
-      user.resetToken = undefined; 
+      user.resetToken = undefined;
       await user.save();
 
       console.log("Contraseña actualizada para el usuario:", email);
