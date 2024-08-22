@@ -54,21 +54,21 @@ class UserController {
     }
   }
 
-  async getAllUsers(req, res) {
+  async getUsers() {
     try {
-      const allUsers = await UsuarioModel.find(
+      const users = await UsuarioModel.find(
         {},
         "first_name last_name email role"
       );
-      res.json(allUsers);
+      return users;
     } catch (error) {
       console.error("Error al obtener todos los usuarios: ", error);
-      res.status(500).send("Error al obtener todos los usuarios.");
+      throw error; 
     }
   }
 
   async deleteInactiveUsers(req, res) {
-    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000); // 30 minutos en milisegundos
+    const thirtyMinutesAgo = new Date(Date.now() - 1 * 60 * 1000); // 30 minutos en milisegundos
     try {
       // Buscar usuarios inactivos con rol "user"
       const inactiveUsers = await UsuarioModel.find({
@@ -77,20 +77,37 @@ class UserController {
       });
   
       res.json(inactiveUsers);
-  
+
       // Eliminar a los usuarios inactivos
-      /* for (const user of inactiveUsers) {
+      for (const user of inactiveUsers) {
         await UsuarioModel.findByIdAndDelete(user._id);
-        // Enviar un correo electrónico notificando al usuario sobre la eliminación
-        await emailManager.send({
-          to: user.email,
-          subject: "Cuenta eliminada por inactividad",
-          text: "Tu cuenta ha sido eliminada debido a inactividad.",
-        });
-      } */
+      } 
     } catch (error) {
       console.error("Error al eliminar a los usuarios inactivos: ", error);
       res.status(500).send("Error al eliminar a los usuarios inactivos.");
+    }
+  }
+
+  async deleteUser(req, res) {
+    const { uid } = req.params;
+
+    try {
+      await UsuarioModel.findByIdAndDelete(uid);
+      res.redirect('/adminUsers');
+    } catch (error) {
+      res.status(500).send("Error al eliminar el usuario");
+    }
+  }
+
+  async updateUserRole(req, res) {
+    const { uid } = req.params;
+    const { role } = req.body;
+
+    try {
+      await UsuarioModel.findByIdAndUpdate(uid, { role });
+      res.redirect('/adminUsers');
+    } catch (error) {
+      res.status(500).send("Error al actualizar el rol del usuario");
     }
   }
   
@@ -157,7 +174,7 @@ class UserController {
     }
   }
 
-  async changeUserRoleGet(req, res) {
+  /* async changeUserRoleGet(req, res) {
     const { uid } = req.params;
     const { newRole } = req.query;
 
@@ -175,7 +192,7 @@ class UserController {
       console.error("Error al cambiar el rol del usuario:", err);
       res.status(500).json({ message: "Error interno del servidor" });
     }
-  }
+  } */
 
   async requestPasswordReset(req, res) {
     const { email } = req.body;

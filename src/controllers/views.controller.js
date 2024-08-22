@@ -1,6 +1,9 @@
 import ProductController from "../controllers/product.controller.js";
 import { productsModel } from "../models/products.model.js";
 import { cartModel } from "../models/cart.model.js";
+import UserController from "./user.controller.js";
+
+const userController = new UserController();
 const productController = new ProductController();
 
 class ViewsController {
@@ -19,6 +22,20 @@ class ViewsController {
       res.status(500).json({ error: "Error interno del servidor" });
     }
   }
+  
+  async adminUsers(req, res) {
+    try {
+      if (!req.session.login) {
+        return res.redirect("/login");
+      }
+      const users = await userController.getUsers();
+      res.render("adminUsers", { users });
+    } catch (error) {
+      console.error("Error en adminUsers: ", error);
+      res.status(500).json({ error: "Error interno del servidor" });
+    }
+  }
+
 
   realtimeproducts(req, res) {
     try {
