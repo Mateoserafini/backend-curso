@@ -1,22 +1,7 @@
 import dotenv from "dotenv";
-import fs from "fs";
-import program from "../utils.js";
 
-const { mode } = program.opts();
 
-const envPaths = {
-    produccion: "./.env.produccion",
-    desarrollo: "./.env.desarrollo",
-    default: "./.env",
-};
-
-let envPath = envPaths[mode] || envPaths.default;
-
-if (!fs.existsSync(envPath)) {
-    envPath = envPaths.default;
-}
-
-dotenv.config({ path: envPath });
+dotenv.config();
 
 const configObject = {
     PORT: process.env.PORT,
