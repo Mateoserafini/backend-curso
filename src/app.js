@@ -31,7 +31,7 @@ const hbs = handlebars.create({
   helpers: {
     multiply: (a, b) => a * b,
     calculateTotal: (products) => products.reduce((total, product) => total + product.quantity * product.product.price, 0),
-    eq: (a, b) => a === b,  // Registrar el helper "eq"
+    eq: (a, b) => a === b, 
   },
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,
@@ -76,7 +76,7 @@ app.get('/loggertest', (req, res) => {
 app.use('/', routerViews);
 
 const httpServer = app.listen(configObject.PORT, () => {
-  logger.info(`Escuchando en http://localhost:${configObject.PORT}`);
+  logger.info(configObject.PORT);
 });
 
 const socketServer = new Server(httpServer);

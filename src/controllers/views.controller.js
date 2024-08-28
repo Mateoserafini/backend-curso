@@ -147,7 +147,9 @@ class ViewsController {
       if (!req.session.login) {
         return res.redirect("/login");
       }
-      res.render("profile");
+      const isAdmin = req.user.role === 'admin'; 
+
+    res.render("profile", { isAdmin });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Error interno del servidor" });

@@ -1,3 +1,8 @@
 <h1>ya estas logeado</h1>
 
 <a href="/api/sessions/logout">Logout</a>
+
+{{#if isAdmin}}
+  <a href="/adminUsers">Ir al panel de administración</a>
+{{/if}}
+
