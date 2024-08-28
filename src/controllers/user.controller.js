@@ -68,20 +68,23 @@ class UserController {
   }
 
   async deleteInactiveUsers(req, res) {
-    const thirtyMinutesAgo = new Date(Date.now() - 1 * 60 * 1000); // 30 minutos en milisegundos
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000); // Dos días
     try {
-      // Buscar usuarios inactivos con rol "user"
       const inactiveUsers = await UsuarioModel.find({
-        lastLogin: { $lt: thirtyMinutesAgo },
-        role: "user" 
+        lastLogin: { $lt: twoDaysAgo },
+        role: "user",
       });
-  
-      res.json(inactiveUsers);
 
-      // Eliminar a los usuarios inactivos
+      if (inactiveUsers.length === 0) {
+        return res.status(200).send("No hay usuarios inactivos para eliminar.");
+      }
+
       for (const user of inactiveUsers) {
+        await emailManager.enviarCorreoEliminacionCuenta(user.email, user.first_name);        
         await UsuarioModel.findByIdAndDelete(user._id);
-      } 
+      }
+
+      res.status(200).send("Usuarios inactivos eliminados correctamente.");
     } catch (error) {
       console.error("Error al eliminar a los usuarios inactivos: ", error);
       res.status(500).send("Error al eliminar a los usuarios inactivos.");
@@ -173,26 +176,6 @@ class UserController {
       next(error);
     }
   }
-
-  /* async changeUserRoleGet(req, res) {
-    const { uid } = req.params;
-    const { newRole } = req.query;
-
-    try {
-      const user = await UsuarioModel.findById(uid);
-      if (!user) {
-        return res.status(404).json({ message: "Usuario no encontrado" });
-      }
-
-      user.role = newRole;
-      await user.save();
-
-      res.json({ message: `Rol de usuario actualizado a ${newRole}` });
-    } catch (err) {
-      console.error("Error al cambiar el rol del usuario:", err);
-      res.status(500).json({ message: "Error interno del servidor" });
-    }
-  } */
 
   async requestPasswordReset(req, res) {
     const { email } = req.body;
