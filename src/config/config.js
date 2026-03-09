@@ -1,7 +1,11 @@
 import dotenv from "dotenv";
+import program from "../utils.js";
 
+const { mode } = program.opts();
 
-dotenv.config();
+dotenv.config({
+    path: mode === "produccion" ? "./.env.produccion" : "./.env.desarrollo"
+});
 
 const configObject = {
     PORT: process.env.PORT,
@@ -16,5 +20,7 @@ const configObject = {
     mailerUser: process.env.MAILERUSER,
     mailerPassword: process.env.MAILERPASSWORD,
 };
+
+console.log("DB URL from ENV:", configObject.mongoURL);
 
 export default configObject;

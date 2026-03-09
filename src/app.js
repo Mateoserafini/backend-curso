@@ -5,7 +5,7 @@ import { Server } from 'socket.io';
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUiExpress from "swagger-ui-express";
 import './database.js';
-import 'dotenv/config';
+
 import routerProduct from './routes/products.router.js';
 import routerViews from './routes/views.router.js';
 import cartRouter from './routes/cart.router.js';
